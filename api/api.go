@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/handlers"
 	"github.com/raintank/tsdb-gw/auth"
@@ -50,6 +51,16 @@ func New(authPlugin string, appName string) *Api {
 	m.Use(Tracer(appName))
 	m.Use(GetContextHandler())
 	m.Get("/", index)
+	// route pprof to where it belongs, except for our own extensions
+	m.Use(func(ctx *macaron.Context) {
+		if strings.HasPrefix(ctx.Req.URL.Path, "/debug/") &&
+			!strings.HasPrefix(ctx.Req.URL.Path, "/debug/pprof/block") &&
+			!strings.HasPrefix(ctx.Req.URL.Path, "/debug/pprof/mutex") {
+			http.DefaultServeMux.ServeHTTP(ctx.Resp, ctx.Req.Request)
+		}
+	})
+	m.Get("/debug/pprof/block", blockHandler)
+	m.Get("/debug/pprof/mutex", mutexHandler)
 
 	a.Router = m
 	return a
