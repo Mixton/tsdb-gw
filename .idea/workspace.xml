@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="5d6c3a72-ffc2-46c2-a7b5-90de77055a67" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auth/file.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="276">
+              <caret line="62" column="9" lean-forward="true" selection-start-line="62" selection-start-column="9" selection-end-line="62" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/metrics_client/metrics_client.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="260">
+              <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auth/auth.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="189">
+              <caret line="45" column="34" lean-forward="true" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.circleci/config.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cmd/cortex-gw/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/middleware_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="10" column="67" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="67" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auth/gcom/auth_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="243">
+              <caret line="546" column="42" lean-forward="true" selection-start-line="546" selection-start-column="42" selection-end-line="546" selection-end-column="42" />
+              <folding>
+                <element signature="e#14#167#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/auth/gcom/auth.go">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/vendor/github.com/smartystreets/goconvey/convey/doc.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="151">
+              <caret line="72" column="5" selection-start-line="72" selection-start-column="5" selection-end-line="72" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/middleware.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="39">
+              <caret line="121" column="5" selection-start-line="121" selection-start-column="5" selection-end-line="121" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>can't switch protocols using non-Hijacker ResponseWriter type</find>
+      <find>Hijack</find>
+      <find>:80</find>
+      <find>hija</find>
+      <find>handleUpgradeResponse</find>
+      <find>ws</find>
+      <find>webso</find>
+      <find>Hijack failed on protocol switch</find>
+      <find>hijacker</find>
+      <find>TracingResponseWriter</find>
+      <find>hijackclosenotifier</find>
+      <find>hijack</find>
+      <find>9000</find>
+      <find>websock</find>
+      <find>.use</find>
+      <find>.Resp =</find>
+      <find>Macaron handler must be a callable function</find>
+      <find>X-Scope-OrgID</find>
+      <find>x-scop</find>
+      <find>not_very_secret_key</find>
+      <find>scheme</find>
+      <find>golang</find>
+      <find>TestGetAuthCreds</find>
+      <find>So</find>
+      <find>func()</find>
+      <find>So(</find>
+      <find>localhost</find>
+      <find>5000</find>
+      <find>golang:1.12</find>
+      <find>jaeger-client-go</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>c.So</replace>
+      <replace>func(c C)</replace>
+      <replace>c.So(</replace>
+    </replaceStrings>
+  </component>
+  <component name="GOROOT" path="/usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/query/cortex/cortex.go" />
+        <option value="$PROJECT_DIR$/cmd/cortex-gw/main_test.go" />
+        <option value="$PROJECT_DIR$/api/models/main_test.go" />
+        <option value="$PROJECT_DIR$/api/main_test.go" />
+        <option value="$PROJECT_DIR$/api/middleware.go" />
+        <option value="$PROJECT_DIR$/api/api_test.go" />
+        <option value="$PROJECT_DIR$/api/middleware_test.go" />
+        <option value="$PROJECT_DIR$/auth/gcom/auth_test.go" />
+        <option value="$PROJECT_DIR$/.circleci/config.yml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="133" />
+    <option name="y" value="47" />
+    <option name="width" value="1400" />
+    <option name="height" value="833" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name=".circleci" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="api" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="auth" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="auth" type="462c0819:PsiDirectoryNode" />
+              <item name="gcom" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="build" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="cmd" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="cmd" type="462c0819:PsiDirectoryNode" />
+              <item name="cortex-gw" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="cmd" type="462c0819:PsiDirectoryNode" />
+              <item name="persister-gw" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="cmd" type="462c0819:PsiDirectoryNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="documentation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="ingest" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="k8s" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="metrics_client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="persister" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="publish" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="query" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="query" type="462c0819:PsiDirectoryNode" />
+              <item name="cortex" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="query" type="462c0819:PsiDirectoryNode" />
+              <item name="graphite" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="query" type="462c0819:PsiDirectoryNode" />
+              <item name="metrictank" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="scripts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="smartystreets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="golang.org" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="golang.org" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="golang.org" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="golang.org" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="golang.org" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+              <item name="httpguts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="gopkg.in" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="gopkg.in" type="462c0819:PsiDirectoryNode" />
+              <item name="macaron.v1" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="x" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+              <item name="httpguts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="Go SDK 1.12.1" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="net" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
+              <item name="httputil" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.gopath.indexing.explicitly.defined" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/api" />
+      <recent name="$PROJECT_DIR$/api/models" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Test.TestGetAuthCreds in github.com/raintank/tsdb-gw/api">
+    <configuration name="TestGetAuthCreds in github.com/raintank/tsdb-gw/api" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="tsdb-gw" />
+      <working_directory value="$PROJECT_DIR$/api" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/raintank/tsdb-gw/api" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestGetAuthCreds$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReverseProxyWebSocket in github.com/raintank/tsdb-gw/api" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="tsdb-gw" />
+      <working_directory value="$PROJECT_DIR$/api" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/raintank/tsdb-gw/api" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestReverseProxyWebSocket$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReverseProxyWebSocketWithHijacker in github.com/raintank/tsdb-gw/api" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="tsdb-gw" />
+      <working_directory value="$PROJECT_DIR$/api" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/raintank/tsdb-gw/api" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestReverseProxyWebSocketWithHijacker$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestReverseProxyWebSocketWithoutHijacker in github.com/raintank/tsdb-gw/api" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="tsdb-gw" />
+      <working_directory value="$PROJECT_DIR$/api" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/raintank/tsdb-gw/api" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestReverseProxyWebSocketWithoutHijacker$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="api_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="tsdb-gw" />
+      <working_directory value="$PROJECT_DIR$/api" />
+      <framework value="gotest" />
+      <kind value="FILE" />
+      <package value="github.com/raintank/tsdb-gw" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/api/api_test.go" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestGetAuthCreds in github.com/raintank/tsdb-gw/api" />
+        <item itemvalue="Go Test.api_test.go" />
+        <item itemvalue="Go Test.TestReverseProxyWebSocketWithHijacker in github.com/raintank/tsdb-gw/api" />
+        <item itemvalue="Go Test.TestReverseProxyWebSocketWithoutHijacker in github.com/raintank/tsdb-gw/api" />
+        <item itemvalue="Go Test.TestReverseProxyWebSocket in github.com/raintank/tsdb-gw/api" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TestHistory">
+    <history-entry file="TestReverseProxyWebSocketWithoutHijacker_in_github_com_raintank_tsdb-gw_api - 2019.04.10 at 15h 18m 51s.xml">
+      <configuration name="TestReverseProxyWebSocketWithoutHijacker in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="api_test_go - 2019.04.10 at 15h 18m 57s.xml">
+      <configuration name="api_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="api_test_go - 2019.04.10 at 15h 19m 17s.xml">
+      <configuration name="api_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReverseProxyWebSocketWithHijacker_in_github_com_raintank_tsdb-gw_api - 2019.04.10 at 17h 12m 16s.xml">
+      <configuration name="TestReverseProxyWebSocketWithHijacker in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestReverseProxyWebSocketWithHijacker_in_github_com_raintank_tsdb-gw_api - 2019.04.11 at 18h 20m 18s.xml">
+      <configuration name="TestReverseProxyWebSocketWithHijacker in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="api_test_go - 2019.04.11 at 18h 21m 17s.xml">
+      <configuration name="api_test.go" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestGetAuthCreds_in_github_com_raintank_tsdb-gw_api - 2019.04.12 at 13h 02m 41s.xml">
+      <configuration name="TestGetAuthCreds in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestGetAuthCreds_in_github_com_raintank_tsdb-gw_api - 2019.04.12 at 13h 20m 29s.xml">
+      <configuration name="TestGetAuthCreds in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestGetAuthCreds_in_github_com_raintank_tsdb-gw_api - 2019.04.12 at 13h 20m 52s.xml">
+      <configuration name="TestGetAuthCreds in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestGetAuthCreds_in_github_com_raintank_tsdb-gw_api - 2019.04.12 at 13h 23m 16s.xml">
+      <configuration name="TestGetAuthCreds in github.com/raintank/tsdb-gw/api" configurationId="GoTestRunConfiguration" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="67" y="25" width="1533" height="875" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.27505043" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.370319" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32871014" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3994452" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32871014" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Database" order="3" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER">
+                <list>
+                  <option value="0" />
+                  <option value="1" />
+                  <option value="2" />
+                  <option value="3" />
+                </list>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/macaron.go</url>
+          <line>66</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoApplicationRunConfiguration">
+        <watch expression="macCtx.Resp.(macaron.ResponseWriter)" language="go" />
+        <watch expression="types(macCtx.Resp)" language="go" />
+        <watch expression="macCtx.Resp.types()" language="go" />
+        <watch expression="macCtx.Resp.(types)" language="go" />
+      </configuration>
+      <configuration name="GoTestRunConfiguration">
+        <watch expression="*addr" language="go" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>*addr</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.(types)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.(macaron.ResponseWriter)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.(*http.ResponseWriter)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.(http.ResponseWriter)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.types()</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.types</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>types(macCtx.Resp)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>macCtx.Resp.(http.Hijacker)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>*(*&quot;func(*github.com/raintank/tsdb-gw/api/models.Context)&quot;)(824635057240)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/scripts/build.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file:///usr/local/go/src/builtin/builtin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="188" column="5" selection-start-line="188" selection-start-column="5" selection-end-line="188" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/glacjay/goini/ini.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/grafana/globalconf/globalconf.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="40" column="5" selection-start-line="40" selection-start-column="5" selection-end-line="40" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/grafana-com.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="20" column="24" selection-start-line="20" selection-start-column="24" selection-end-line="20" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/grafana_com_instance.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="24" column="28" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/http/request.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="106" column="5" selection-start-line="106" selection-start-column="5" selection-end-line="106" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/go-macaron/inject/inject.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="156" selection-start-line="156" selection-end-line="156" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/reflect/value.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6630">
+          <caret line="446" selection-start-line="446" selection-end-line="446" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gorilla/handlers/handlers_go18.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/response_writer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1500">
+          <caret line="105" column="5" selection-start-line="105" selection-start-column="5" selection-end-line="105" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/models/context.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="9" column="5" selection-start-line="9" selection-start-column="5" selection-end-line="9" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/recovery.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="135" column="5" selection-start-line="135" selection-start-column="5" selection-end-line="135" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/context.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="109" column="18" selection-start-line="109" selection-start-column="18" selection-end-line="109" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publish/cortex/proxy.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="e#16#261#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/dial.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="686" column="5" selection-start-line="686" selection-start-column="5" selection-end-line="686" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/runtime/panic.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="689" selection-start-line="689" selection-end-line="689" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/testing/testing.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="864" selection-start-line="864" selection-end-line="864" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/macaron.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="211" selection-start-line="211" selection-end-line="211" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/gopkg.in/macaron.v1/router.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="289" selection-start-line="289" selection-end-line="289" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/runtime/proc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="301" selection-start-line="301" selection-end-line="301" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/main_test.go" />
+    <entry file="file:///usr/local/go/src/net/http/httptest/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1260">
+          <caret line="97" column="5" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/http/httputil/reverseproxy.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2610">
+          <caret line="187" column="23" selection-start-line="187" selection-start-column="23" selection-end-line="187" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/gorilla/handlers/handlers.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="930">
+          <caret line="74" column="27" selection-start-line="74" selection-start-column="27" selection-end-line="74" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/api_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/query/cortex/cortex.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="33" column="67" selection-start-line="33" selection-start-column="67" selection-end-line="33" selection-end-column="67" />
+          <folding>
+            <element signature="e#16#154#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/http/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2610">
+          <caret line="198" column="4" selection-start-line="198" selection-start-column="4" selection-end-line="198" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/go/src/net/http/httputil/reverseproxy_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14580">
+          <caret line="990" column="19" selection-start-line="990" selection-start-column="19" selection-end-line="990" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/api.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="29" column="5" selection-start-line="29" selection-start-column="5" selection-end-line="29" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/file.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="62" column="9" lean-forward="true" selection-start-line="62" selection-start-column="9" selection-end-line="62" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/metrics_client/metrics_client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="260">
+          <caret line="42" lean-forward="true" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/smartystreets/goconvey/convey/doc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="72" column="5" selection-start-line="72" selection-start-column="5" selection-end-line="72" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/middleware.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="39">
+          <caret line="121" column="5" selection-start-line="121" selection-start-column="5" selection-end-line="121" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/middleware_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="10" column="67" selection-start-line="10" selection-start-column="58" selection-end-line="10" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/gcom/auth_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="546" column="42" lean-forward="true" selection-start-line="546" selection-start-column="42" selection-end-line="546" selection-end-column="42" />
+          <folding>
+            <element signature="e#14#167#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/gcom/auth.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auth/auth.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="45" column="34" lean-forward="true" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/cortex-gw/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.circleci/config.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="34" lean-forward="true" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

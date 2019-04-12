@@ -14,58 +14,58 @@ import (
 )
 
 func TestFlags(t *testing.T) {
-	Convey("When setting auth-valid-org-id to empty string", t, func() {
+	Convey("When setting auth-valid-org-id to empty string", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 0)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 0)
 	})
-	Convey("When setting auth-valid-org-id has no values", t, func() {
+	Convey("When setting auth-valid-org-id has no values", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", ", ")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 0)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 0)
 	})
 
-	Convey("When setting auth-valid-org-id to invalid value", t, func() {
+	Convey("When setting auth-valid-org-id to invalid value", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "foo")
-		So(err, ShouldHaveSameTypeAs, &strconv.NumError{})
+		c.So(err, ShouldHaveSameTypeAs, &strconv.NumError{})
 	})
 
-	Convey("When setting auth-valid-org-id to single org", t, func() {
+	Convey("When setting auth-valid-org-id to single org", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "10")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 1)
-		So(validOrgIds[0], ShouldEqual, 10)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 1)
+		c.So(validOrgIds[0], ShouldEqual, 10)
 	})
 
-	Convey("When setting auth-valid-org-id to many orgs", t, func() {
+	Convey("When setting auth-valid-org-id to many orgs", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "10,1,17")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 3)
-		So(validOrgIds[0], ShouldEqual, 10)
-		So(validOrgIds[1], ShouldEqual, 1)
-		So(validOrgIds[2], ShouldEqual, 17)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 3)
+		c.So(validOrgIds[0], ShouldEqual, 10)
+		c.So(validOrgIds[1], ShouldEqual, 1)
+		c.So(validOrgIds[2], ShouldEqual, 17)
 	})
 
-	Convey("When auth-valid-org-id setting has spaces", t, func() {
+	Convey("When auth-valid-org-id setting has spaces", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", " 10 , 1, 17")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 3)
-		So(validOrgIds[0], ShouldEqual, 10)
-		So(validOrgIds[1], ShouldEqual, 1)
-		So(validOrgIds[2], ShouldEqual, 17)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 3)
+		c.So(validOrgIds[0], ShouldEqual, 10)
+		c.So(validOrgIds[1], ShouldEqual, 1)
+		c.So(validOrgIds[2], ShouldEqual, 17)
 	})
 
-	Convey("When auth-valid-org-id setting has repeated commas", t, func() {
+	Convey("When auth-valid-org-id setting has repeated commas", t, func(c C) {
 		validOrgIds = int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", ",,,10")
-		So(err, ShouldBeNil)
-		So(validOrgIds, ShouldHaveLength, 1)
+		c.So(err, ShouldBeNil)
+		c.So(validOrgIds, ShouldHaveLength, 1)
 	})
 }
 
@@ -86,52 +86,52 @@ func TestAuth(t *testing.T) {
 
 	tokenCache = &TokenCache{items: make(map[string]*TokenResp), cacheTTL: time.Millisecond * 10}
 
-	Convey("When authenticating with adminKey", t, func() {
+	Convey("When authenticating with adminKey", t, func(c C) {
 		user, err := Auth("key", "key")
-		So(err, ShouldBeNil)
-		So(user.Role, ShouldEqual, ROLE_ADMIN)
-		So(user.OrgId, ShouldEqual, 1)
-		So(user.OrgName, ShouldEqual, "Admin")
-		So(user.IsAdmin, ShouldEqual, true)
-		So(user.key, ShouldEqual, "key")
+		c.So(err, ShouldBeNil)
+		c.So(user.Role, ShouldEqual, ROLE_ADMIN)
+		c.So(user.OrgId, ShouldEqual, 1)
+		c.So(user.OrgName, ShouldEqual, "Admin")
+		c.So(user.IsAdmin, ShouldEqual, true)
+		c.So(user.key, ShouldEqual, "key")
 	})
-	Convey("when authenticating with valid Key", t, func() {
+	Convey("when authenticating with valid Key", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testUser)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("POST", "https://grafana.com/api/api-keys/check", responder)
 
 		user, err := Auth("key", "foo")
-		So(err, ShouldBeNil)
-		So(user.Role, ShouldEqual, testUser.Role)
-		So(user.OrgId, ShouldEqual, testUser.OrgId)
-		So(user.OrgName, ShouldEqual, testUser.OrgName)
-		So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
-		So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
-		So(user.key, ShouldEqual, testUser.key)
+		c.So(err, ShouldBeNil)
+		c.So(user.Role, ShouldEqual, testUser.Role)
+		c.So(user.OrgId, ShouldEqual, testUser.OrgId)
+		c.So(user.OrgName, ShouldEqual, testUser.OrgName)
+		c.So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
+		c.So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
+		c.So(user.key, ShouldEqual, testUser.key)
 		mockTransport.Reset()
 	})
 
-	Convey("When authenticating using cache", t, func() {
+	Convey("When authenticating using cache", t, func(c C) {
 		tokenCache.Set("foo", &testUser)
 		mockTransport.RegisterNoResponder(func(req *http.Request) (*http.Response, error) {
 			t.Fatalf("unexpected request made. %s %s", req.Method, req.URL.String())
 			return nil, nil
 		})
 		user, err := Auth("key", "foo")
-		So(err, ShouldBeNil)
-		So(user.Role, ShouldEqual, testUser.Role)
-		So(user.OrgId, ShouldEqual, testUser.OrgId)
-		So(user.OrgName, ShouldEqual, testUser.OrgName)
-		So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
-		So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
-		So(user.key, ShouldEqual, testUser.key)
+		c.So(err, ShouldBeNil)
+		c.So(user.Role, ShouldEqual, testUser.Role)
+		c.So(user.OrgId, ShouldEqual, testUser.OrgId)
+		c.So(user.OrgName, ShouldEqual, testUser.OrgName)
+		c.So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
+		c.So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
+		c.So(user.key, ShouldEqual, testUser.key)
 		mockTransport.Reset()
 	})
 
-	Convey("When authenticating with invalid org id 1", t, func() {
+	Convey("When authenticating with invalid org id 1", t, func(c C) {
 		tokenCache.Clear()
 		responder, err := httpmock.NewJsonResponder(200, &testUser)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("POST", "https://grafana.com/api/api-keys/check", responder)
 
 		originalValidOrgIds := validOrgIds
@@ -139,15 +139,15 @@ func TestAuth(t *testing.T) {
 		validOrgIds = int64SliceFlag{1}
 
 		user, err := Auth("key", "foo")
-		So(user, ShouldBeNil)
-		So(err, ShouldEqual, ErrInvalidOrgId)
+		c.So(user, ShouldBeNil)
+		c.So(err, ShouldEqual, ErrInvalidOrgId)
 		mockTransport.Reset()
 	})
 
-	Convey("When authenticating with invalid org id 2", t, func() {
+	Convey("When authenticating with invalid org id 2", t, func(c C) {
 		tokenCache.Clear()
 		responder, err := httpmock.NewJsonResponder(200, &testUser)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("POST", "https://grafana.com/api/api-keys/check", responder)
 
 		originalValidOrgIds := validOrgIds
@@ -155,15 +155,15 @@ func TestAuth(t *testing.T) {
 
 		validOrgIds = int64SliceFlag{3, 4, 5}
 		user, err := Auth("key", "foo")
-		So(user, ShouldBeNil)
-		So(err, ShouldEqual, ErrInvalidOrgId)
+		c.So(user, ShouldBeNil)
+		c.So(err, ShouldEqual, ErrInvalidOrgId)
 		mockTransport.Reset()
 	})
 
-	Convey("When authenticating with explicitely valid org id", t, func() {
+	Convey("When authenticating with explicitely valid org id", t, func(c C) {
 		tokenCache.Clear()
 		responder, err := httpmock.NewJsonResponder(200, &testUser)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("POST", "https://grafana.com/api/api-keys/check", responder)
 
 		originalValidOrgIds := validOrgIds
@@ -171,17 +171,17 @@ func TestAuth(t *testing.T) {
 
 		validOrgIds = int64SliceFlag{1, 2, 3, 4}
 		user, err := Auth("key", "foo")
-		So(err, ShouldBeNil)
-		So(user.Role, ShouldEqual, testUser.Role)
-		So(user.OrgId, ShouldEqual, testUser.OrgId)
-		So(user.OrgName, ShouldEqual, testUser.OrgName)
-		So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
-		So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
-		So(user.key, ShouldEqual, testUser.key)
+		c.So(err, ShouldBeNil)
+		c.So(user.Role, ShouldEqual, testUser.Role)
+		c.So(user.OrgId, ShouldEqual, testUser.OrgId)
+		c.So(user.OrgName, ShouldEqual, testUser.OrgName)
+		c.So(user.OrgSlug, ShouldEqual, testUser.OrgSlug)
+		c.So(user.IsAdmin, ShouldEqual, testUser.IsAdmin)
+		c.So(user.key, ShouldEqual, testUser.key)
 		mockTransport.Reset()
 	})
 
-	Convey("When cached entry is expired", t, func() {
+	Convey("When cached entry is expired", t, func(c C) {
 		tc := &TokenCache{
 			items:    make(map[string]*TokenResp),
 			stop:     make(chan struct{}),
@@ -214,8 +214,8 @@ func TestAuth(t *testing.T) {
 
 		// make sure key is cached
 		cuser, valid := tc.Get("bar")
-		So(cuser, ShouldNotBeNil)
-		So(valid, ShouldBeTrue)
+		c.So(cuser, ShouldNotBeNil)
+		c.So(valid, ShouldBeTrue)
 
 		// start background task to reValidate our token
 		go tc.backgroundValidation()
@@ -227,18 +227,18 @@ func TestAuth(t *testing.T) {
 
 		// make sure cache is now updated.
 		user, valid := tc.Get("bar")
-		So(user, ShouldNotBeNil)
-		So(valid, ShouldBeTrue)
-		So(user.Role, ShouldEqual, newUser.Role)
-		So(user.OrgId, ShouldEqual, newUser.OrgId)
-		So(user.OrgName, ShouldEqual, newUser.OrgName)
-		So(user.OrgSlug, ShouldEqual, newUser.OrgSlug)
-		So(user.IsAdmin, ShouldEqual, newUser.IsAdmin)
-		So(user.key, ShouldEqual, newUser.key)
+		c.So(user, ShouldNotBeNil)
+		c.So(valid, ShouldBeTrue)
+		c.So(user.Role, ShouldEqual, newUser.Role)
+		c.So(user.OrgId, ShouldEqual, newUser.OrgId)
+		c.So(user.OrgName, ShouldEqual, newUser.OrgName)
+		c.So(user.OrgSlug, ShouldEqual, newUser.OrgSlug)
+		c.So(user.IsAdmin, ShouldEqual, newUser.IsAdmin)
+		c.So(user.key, ShouldEqual, newUser.key)
 		mockTransport.Reset()
 	})
 
-	Convey("When token has not been seen for more than cachettl", t, func() {
+	Convey("When token has not been seen for more than cachettl", t, func(c C) {
 		tc := &TokenCache{
 			items:    make(map[string]*TokenResp),
 			stop:     make(chan struct{}),
@@ -262,8 +262,8 @@ func TestAuth(t *testing.T) {
 
 		// make sure key is cached
 		cuser, valid := tc.Get("bar")
-		So(cuser, ShouldNotBeNil)
-		So(valid, ShouldBeTrue)
+		c.So(cuser, ShouldNotBeNil)
+		c.So(valid, ShouldBeTrue)
 
 		tc.items["bar"].lastRead = 0
 
@@ -276,12 +276,12 @@ func TestAuth(t *testing.T) {
 		}
 
 		user, valid := tc.Get("bar")
-		So(user, ShouldBeNil)
-		So(valid, ShouldBeFalse)
+		c.So(user, ShouldBeNil)
+		c.So(valid, ShouldBeFalse)
 		mockTransport.Reset()
 	})
 
-	Convey("When concurrent requests for uncached token", t, func() {
+	Convey("When concurrent requests for uncached token", t, func(c C) {
 		mu := sync.Mutex{}
 		reqCount := 0
 		mockTransport.RegisterResponder("POST", "https://grafana.com/api/api-keys/check",
@@ -318,15 +318,15 @@ func TestAuth(t *testing.T) {
 		}()
 
 		for r := range ch {
-			So(r.err, ShouldBeNil)
-			So(r.user.Role, ShouldEqual, testUser.Role)
-			So(r.user.OrgId, ShouldEqual, testUser.OrgId)
-			So(r.user.OrgName, ShouldEqual, testUser.OrgName)
-			So(r.user.OrgSlug, ShouldEqual, testUser.OrgSlug)
-			So(r.user.IsAdmin, ShouldEqual, testUser.IsAdmin)
-			So(r.user.key, ShouldEqual, testUser.key)
+			c.So(r.err, ShouldBeNil)
+			c.So(r.user.Role, ShouldEqual, testUser.Role)
+			c.So(r.user.OrgId, ShouldEqual, testUser.OrgId)
+			c.So(r.user.OrgName, ShouldEqual, testUser.OrgName)
+			c.So(r.user.OrgSlug, ShouldEqual, testUser.OrgSlug)
+			c.So(r.user.IsAdmin, ShouldEqual, testUser.IsAdmin)
+			c.So(r.user.key, ShouldEqual, testUser.key)
 		}
-		So(reqCount, ShouldEqual, 1)
+		c.So(reqCount, ShouldEqual, 1)
 	})
 }
 
@@ -359,64 +359,64 @@ func TestCheckInstance(t *testing.T) {
 		cacheTTL: time.Millisecond * 10,
 	}
 
-	Convey("when checking valid instanceID", t, func() {
+	Convey("when checking valid instanceID", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.Reset()
 
 		valid, cached = instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 	})
 
-	Convey("when checking cached valid instanceID", t, func() {
+	Convey("when checking cached valid instanceID", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(404, "not found")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 
 		instanceCache.Set(fmt.Sprintf("%s:%s", "10", testUser.key), true)
 		err = testUser.CheckInstance("10")
-		So(err, ShouldEqual, nil)
+		c.So(err, ShouldEqual, nil)
 		mockTransport.Reset()
 	})
-	Convey("when checking instanceID and g.com is down", t, func() {
+	Convey("when checking instanceID and g.com is down", t, func(c C) {
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", func(req *http.Request) (*http.Response, error) {
 			return nil, fmt.Errorf("failed")
 		})
 		instanceCache.Clear()
 		err := testUser.CheckInstance("10")
-		So(err.Error(), ShouldEqual, "Get https://grafana.com/api/hosted-metrics/10: failed")
+		c.So(err.Error(), ShouldEqual, "Get https://grafana.com/api/hosted-metrics/10: failed")
 		mockTransport.Reset()
 	})
-	Convey("when checking invalid instanceID", t, func() {
+	Convey("when checking invalid instanceID", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(404, "not found")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/20", responder)
 
 		err = testUser.CheckInstance("20")
-		So(err, ShouldEqual, ErrInvalidInstanceID)
+		c.So(err, ShouldEqual, ErrInvalidInstanceID)
 		mockTransport.Reset()
 	})
-	Convey("when checking cached invalid instanceID", t, func() {
+	Convey("when checking cached invalid instanceID", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(500, "err")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/20", responder)
 		instanceCache.Set(fmt.Sprintf("%s:%s", "20", testUser.key), false)
 		err = testUser.CheckInstance("20")
-		So(err, ShouldEqual, ErrInvalidInstanceID)
+		c.So(err, ShouldEqual, ErrInvalidInstanceID)
 		mockTransport.Reset()
 	})
 
-	Convey("When cached entry is expired", t, func() {
+	Convey("When cached entry is expired", t, func(c C) {
 		ic := &InstanceCache{
 			items: make(map[string]*InstanceResp),
 			stop:  make(chan struct{}),
@@ -437,8 +437,8 @@ func TestCheckInstance(t *testing.T) {
 
 		// make sure key is cached
 		valid, cached := ic.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 
 		// start background task to reValidate our token
 		go ic.backgroundValidation()
@@ -450,12 +450,12 @@ func TestCheckInstance(t *testing.T) {
 
 		// make sure cache is now updated.
 		valid, cached = ic.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeTrue)
 		mockTransport.Reset()
 	})
 
-	Convey("When instance has not been seen for more than cachettl", t, func() {
+	Convey("When instance has not been seen for more than cachettl", t, func(c C) {
 		ic := &InstanceCache{
 			items:    make(map[string]*InstanceResp),
 			stop:     make(chan struct{}),
@@ -475,8 +475,8 @@ func TestCheckInstance(t *testing.T) {
 
 		// make sure key is cached
 		valid, cached := ic.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 
 		ic.items[fmt.Sprintf("%s:%s", "10", testUser.key)].lastRead = 0
 
@@ -489,13 +489,13 @@ func TestCheckInstance(t *testing.T) {
 		}
 
 		valid, cached = ic.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		mockTransport.Reset()
 	})
 
-	Convey("When concurrent requests for uncached instance", t, func() {
+	Convey("When concurrent requests for uncached instance", t, func(c C) {
 		mu := sync.Mutex{}
 		reqCount := 0
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10",
@@ -528,45 +528,45 @@ func TestCheckInstance(t *testing.T) {
 		}()
 
 		for err := range ch {
-			So(err, ShouldBeNil)
+			c.So(err, ShouldBeNil)
 		}
-		So(reqCount, ShouldEqual, 1)
+		c.So(reqCount, ShouldEqual, 1)
 	})
 
 	validInstanceType = "graphite"
-	Convey("when checking valid instanceType", t, func() {
+	Convey("when checking valid instanceType", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.Reset()
 
 		valid, cached = instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 	})
 
 	validInstanceType = "cortex"
 	validationDryRun = false
-	Convey("when checking invalid instanceType", t, func() {
+	Convey("when checking invalid instanceType", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldEqual, ErrInvalidInstanceType)
+		c.So(err, ShouldEqual, ErrInvalidInstanceType)
 		mockTransport.Reset()
 	})
 
@@ -577,23 +577,23 @@ func TestCheckInstance(t *testing.T) {
 	}
 
 	validInstanceType = "logs"
-	Convey("when checking valid logs instance", t, func() {
+	Convey("when checking valid logs instance", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-logs/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.Reset()
 
 		valid, cached = instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 	})
 
 	testInstance = Instance{
@@ -605,38 +605,38 @@ func TestCheckInstance(t *testing.T) {
 	validInstanceType = "cortex"
 	validClusterID = 15
 
-	Convey("when checking valid clusterName", t, func() {
+	Convey("when checking valid clusterName", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.Reset()
 
 		valid, cached = instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeTrue)
-		So(cached, ShouldBeTrue)
+		c.So(valid, ShouldBeTrue)
+		c.So(cached, ShouldBeTrue)
 	})
 
 	validClusterID = 20
-	Convey("when checking invalid clusterName", t, func() {
+	Convey("when checking invalid clusterName", t, func(c C) {
 		responder, err := httpmock.NewJsonResponder(200, &testInstance)
-		So(err, ShouldBeNil)
+		c.So(err, ShouldBeNil)
 		mockTransport.RegisterResponder("GET", "https://grafana.com/api/hosted-metrics/10", responder)
 		instanceCache.Clear()
 		// instance should not be cached.
 		valid, cached := instanceCache.Get(fmt.Sprintf("%s:%s", "10", testUser.key))
-		So(valid, ShouldBeFalse)
-		So(cached, ShouldBeFalse)
+		c.So(valid, ShouldBeFalse)
+		c.So(cached, ShouldBeFalse)
 
 		err = testUser.CheckInstance("10")
-		So(err, ShouldEqual, ErrInvalidCluster)
+		c.So(err, ShouldEqual, ErrInvalidCluster)
 		mockTransport.Reset()
 	})
 }

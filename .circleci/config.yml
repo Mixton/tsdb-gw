@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: /go/src/github.com/raintank/tsdb-gw
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.12.3
     steps:
       - checkout
       - run: scripts/build.sh
@@ -15,7 +15,7 @@ jobs:
   test:
     working_directory: /go/src/github.com/raintank/tsdb-gw
     docker:
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.12.3
     steps:
       - checkout
       - run: scripts/tests.sh

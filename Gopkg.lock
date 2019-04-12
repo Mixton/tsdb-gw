@@ -521,20 +521,21 @@
   revision = "08e90462da344fbb3880e8e47a0ddacc37508579"
 
 [[projects]]
-  digest = "1:1f0b284a6858827de4c27c66b49b2b25df3e16b031c2b57b7892273131e7dd2b"
+  digest = "1:a0509115762ee481fd95b60521b4dcc5ad226c54b741a4924f4f28c0cc6aabc8"
   name = "github.com/smartystreets/assertions"
   packages = [
     ".",
+    "internal/go-diff/diffmatchpatch",
     "internal/go-render/render",
     "internal/oglematchers",
   ]
   pruneopts = "NUT"
-  revision = "7678a5452ebea5b7090a6b163f844c133f523da2"
-  version = "1.8.3"
+  revision = "f487f9de1cd36ebab28235b9373028812fb47cbd"
+  version = "1.10.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:478ca6618bf268752597f11c05bbc2a1c212c642266d76bc62ed31004d7abc3a"
+  digest = "1:4dccd132a83155851c5e9faaa134ee3a931965c666b6b3c076e238fe9b3577a4"
   name = "github.com/smartystreets/goconvey"
   packages = [
     "convey",
@@ -542,7 +543,7 @@
     "convey/reporting",
   ]
   pruneopts = "NUT"
-  revision = "ef6db91d284a0e7badaa1f0c404c30aa7dee3aed"
+  revision = "68dc04aab96ae4326137d6b77330c224063a927e"
 
 [[projects]]
   branch = "master"
@@ -869,6 +870,7 @@
     "github.com/weaveworks/common/httpgrpc/server",
     "github.com/weaveworks/common/user",
     "golang.org/x/net/context/ctxhttp",
+    "golang.org/x/net/http/httpguts",
     "golang.org/x/sync/singleflight",
     "gopkg.in/ini.v1",
     "gopkg.in/macaron.v1",

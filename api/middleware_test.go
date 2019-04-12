@@ -8,39 +8,39 @@ import (
 )
 
 func TestGetAuthCreds(t *testing.T) {
-	Convey("When authenticating with no auth headers", t, func() {
+	Convey("When authenticating with no auth headers", t, func(c C) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		user, pass := getAuthCreds(req)
-		So(user, ShouldEqual, "")
-		So(pass, ShouldEqual, "")
+		c.So(user, ShouldEqual, "")
+		c.So(pass, ShouldEqual, "")
 	})
-	Convey("When authenticating with basicAuth", t, func() {
+	Convey("When authenticating with basicAuth", t, func(c C) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		req.SetBasicAuth("foo", "bar")
 		user, pass := getAuthCreds(req)
-		So(user, ShouldEqual, "foo")
-		So(pass, ShouldEqual, "bar")
+		c.So(user, ShouldEqual, "foo")
+		c.So(pass, ShouldEqual, "bar")
 	})
-	Convey("When authenticating with bearer without instance_id", t, func() {
+	Convey("When authenticating with bearer without instance_id", t, func(c C) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		req.Header.Add("Authorization", "Bearer abcdefg")
 		user, pass := getAuthCreds(req)
-		So(user, ShouldEqual, "api_key")
-		So(pass, ShouldEqual, "abcdefg")
+		c.So(user, ShouldEqual, "api_key")
+		c.So(pass, ShouldEqual, "abcdefg")
 	})
-	Convey("When authenticating with bearer with instance_id", t, func() {
+	Convey("When authenticating with bearer with instance_id", t, func(c C) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		req.Header.Add("Authorization", "Bearer 4:abcdefg")
 		user, pass := getAuthCreds(req)
-		So(user, ShouldEqual, "4")
-		So(pass, ShouldEqual, "abcdefg")
+		c.So(user, ShouldEqual, "4")
+		c.So(pass, ShouldEqual, "abcdefg")
 	})
-	Convey("When authenticating with basicAuth and bearer", t, func() {
+	Convey("When authenticating with basicAuth and bearer", t, func(c C) {
 		req, _ := http.NewRequest("GET", "/", nil)
 		req.Header.Add("Authorization", "Bearer 4:abcdefg")
 		req.SetBasicAuth("foo", "bar")
 		user, pass := getAuthCreds(req)
-		So(user, ShouldEqual, "foo")
-		So(pass, ShouldEqual, "bar")
+		c.So(user, ShouldEqual, "foo")
+		c.So(pass, ShouldEqual, "bar")
 	})
 }
