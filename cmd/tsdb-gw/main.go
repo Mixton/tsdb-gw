@@ -40,6 +40,7 @@ var (
 
 	graphiteURL   = flag.String("graphite-url", "http://localhost:8080", "graphite-api address")
 	metrictankURL = flag.String("metrictank-url", "http://localhost:6060", "metrictank address")
+	importerURL   = flag.String("importer-url", "", "mt-whisper-importer-writer address")
 
 	// stats and tracing
 	statsEnabled    = flag.Bool("stats-enabled", false, "enable sending graphite messages for instrumentation")
@@ -114,6 +115,11 @@ func main() {
 	if err := metrictank.Init(*metrictankURL); err != nil {
 		log.Fatalf(err.Error())
 	}
+	if len(*importerURL) > 0 {
+		if err := ingest.InitMtBulkImporter(*importerURL); err != nil {
+			log.Fatalf(err.Error())
+		}
+	}
 
 	inputs := make([]Stoppable, 0)
 	interrupt := make(chan os.Signal, 1)
@@ -180,4 +186,8 @@ func initRoutes(a *api.Api, enforceRoles bool) {
 	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, ingest.OpenTSDBWrite)...)
 	a.Router.Any("/prometheus/write", a.GenerateHandlers("write", enforceRoles, false, ingest.PrometheusMTWrite)...)
 	a.Router.Post("/metrics/delete", a.GenerateHandlers("write", enforceRoles, false, metrictank.MetrictankProxy("/metrics/delete"))...)
+
+	if len(*importerURL) > 0 {
+		a.Router.Post("/metrics/import", a.GenerateHandlers("write", enforceRoles, false, ingest.MtBulkImporter())...)
+	}
 }
