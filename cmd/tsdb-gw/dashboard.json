@@ -14,19 +14,19 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.4"
+      "version": "6.2.1"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
-      "version": "5.0.0"
+      "version": ""
     },
     {
       "type": "datasource",
       "id": "graphite",
       "name": "Graphite",
-      "version": "5.0.0"
+      "version": "1.0.0"
     }
   ],
   "annotations": {
@@ -46,7 +46,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1523907454122,
+  "iteration": 1559650474614,
   "links": [],
   "panels": [
     {
@@ -80,32 +80,33 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null as zero",
+      "options": {},
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
-            {
-              "alias": "/metricdata/",
-              "lines": true,
-              "points": false,
-              "color": "#2a4422",
-              "stack": "A"
-            },
-            {
-              "alias": "/metricpoint/",
-              "lines": true,
-              "points": false,
-              "color": "#3f6833",
-              "stack": "A"
-            },
-            {
-              "alias": "/metricpoint_no_org/",
-              "lines": true,
-              "points": false,
-              "color": "#7eb26d",
-              "stack": "A"
-            }
+        {
+          "alias": "/metricdata/",
+          "color": "#2a4422",
+          "lines": true,
+          "points": false,
+          "stack": "A"
+        },
+        {
+          "alias": "/metricpoint/",
+          "color": "#3f6833",
+          "lines": true,
+          "points": false,
+          "stack": "A"
+        },
+        {
+          "alias": "/metricpoint_no_org/",
+          "color": "#7eb26d",
+          "lines": true,
+          "points": false,
+          "stack": "A"
+        }
       ],
       "spaceLength": 10,
       "stack": true,
@@ -118,6 +119,7 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "metrics published",
       "tooltip": {
@@ -151,7 +153,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -188,6 +194,7 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -220,6 +227,7 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "memory usage",
       "tooltip": {
@@ -253,7 +261,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -290,6 +302,7 @@
       "linewidth": 2,
       "links": [],
       "nullPointMode": "connected",
+      "options": {},
       "percentage": false,
       "pointradius": 1,
       "points": true,
@@ -322,6 +335,7 @@
         }
       ],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "metric publish duration",
       "tooltip": {
@@ -355,7 +369,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -392,8 +410,9 @@
       "lines": false,
       "linewidth": 2,
       "links": [],
-      "minSpan": 4,
+      "maxPerRow": 6,
       "nullPointMode": "null",
+      "options": {},
       "percentage": false,
       "pointradius": 1,
       "points": true,
@@ -440,6 +459,7 @@
         }
       ],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "http latency $path",
       "tooltip": {
@@ -474,7 +494,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -522,6 +546,7 @@
       ],
       "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
       "title": "response codes $path",
       "tooltip": {
@@ -555,7 +580,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {
@@ -588,8 +617,9 @@
       "lines": false,
       "linewidth": 1,
       "links": [],
-      "minSpan": 4,
+      "maxPerRow": 6,
       "nullPointMode": "null",
+      "options": {},
       "percentage": false,
       "pointradius": 1,
       "points": true,
@@ -640,17 +670,168 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {
+        "max-delta": "dark-blue",
+        "max-timestamp": "semi-dark-purple",
+        "min-delta": "dark-blue",
+        "min-timestamp": "super-light-purple",
+        "now": "light-green"
+      },
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {},
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "max-timestamp",
+          "dashLength": 4,
+          "dashes": true,
+          "yaxis": 2
+        },
+        {
+          "alias": "min-timestamp",
+          "dashLength": 4,
+          "dashes": true,
+          "yaxis": 2
+        },
+        {
+          "alias": "now",
+          "dashLength": 4,
+          "dashes": true,
+          "yaxis": 2
+        },
+        {
+          "alias": "max-delta",
+          "fillBelowTo": "min-delta"
+        },
+        {
+          "alias": "min-delta"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "hide": false,
+          "refCount": 0,
+          "refId": "A",
+          "target": "identity(\"now\")",
+          "textEditor": true
+        },
+        {
+          "hide": false,
+          "refCount": 1,
+          "refId": "B",
+          "target": "alias(minSeries(tsdb-gw.stats.$env.*.metrics.timestamp.http.min.gauge32), 'min-timestamp')",
+          "textEditor": false
+        },
+        {
+          "hide": false,
+          "refCount": 0,
+          "refId": "C",
+          "target": "alias(maxSeries(tsdb-gw.stats.$env.*.metrics.timestamp.http.max.gauge32), 'max-timestamp')",
+          "textEditor": false
+        },
+        {
+          "refCount": 0,
+          "refId": "D",
+          "target": "alias(diffSeries(#B,#A),'min-delta')",
+          "targetFull": "alias(diffSeries(alias(minSeries(tsdb-gw.stats.$env.*.metrics.timestamp.http.min.gauge32), 'min-timestamp'),identity(\"now\")),'min-delta')",
+          "textEditor": true
+        },
+        {
+          "refCount": 0,
+          "refId": "E",
+          "target": "alias(diffSeries(#C,#A), 'max-delta')",
+          "targetFull": "alias(diffSeries(alias(maxSeries(tsdb-gw.stats.$env.*.metrics.timestamp.http.max.gauge32), 'max-timestamp'),identity(\"now\")), 'max-delta')",
+          "textEditor": true
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "ingested timestamps",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "s",
+          "label": "delta",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "none",
+          "label": "unix timestamp",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": false,
-  "schemaVersion": 16,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
+          "selected": true,
           "text": "default",
           "value": "default"
         },
@@ -664,6 +845,7 @@
         "query": "graphite",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -699,6 +881,7 @@
         "query": "tsdb-gw.stats.$env.*",
         "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": null,
         "tags": [],
@@ -710,6 +893,7 @@
         "allValue": null,
         "current": {},
         "datasource": "$datasource",
+        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
@@ -717,8 +901,9 @@
         "name": "path",
         "options": [],
         "query": "tsdb-gw.stats.$env.$host.api.request.*",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],
