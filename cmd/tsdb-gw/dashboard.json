@@ -944,8 +944,8 @@
       "30d"
     ]
   },
-  "timezone": "browser",
+  "timezone": "utc",
   "title": "Tsdb-gw 0.9",
   "uid": "DSd3POZiz",
-  "version": 2
+  "version": 15
 }
