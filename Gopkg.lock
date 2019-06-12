@@ -28,9 +28,12 @@
   revision = "f61b7225d304620f6f2c5cbb21435d0957115429"
 
 [[projects]]
-  digest = "1:a074ae0f4788ea4c4c7045ab37f21943920bc20cf6ff8afcb2d971154cfa87ab"
+  digest = "1:e22217b1fd7a20d7cc1ec7e49b83e63be449ad95bdc7a8dfca3d996a9014bba3"
   name = "github.com/Shopify/sarama"
-  packages = ["."]
+  packages = [
+    ".",
+    "mocks",
+  ]
   pruneopts = "NUT"
   revision = "ec843464b50d4c8b56403ec9d589cf41ea30e722"
   version = "v1.19.0"
@@ -830,6 +833,7 @@
   input-imports = [
     "cloud.google.com/go/bigtable",
     "github.com/Shopify/sarama",
+    "github.com/Shopify/sarama/mocks",
     "github.com/go-macaron/binding",
     "github.com/gogo/protobuf/proto",
     "github.com/golang/snappy",
