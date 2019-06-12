@@ -3,6 +3,7 @@ package kafka
 import (
 	"errors"
 	"flag"
+	"strings"
 	"time"
 
 	"github.com/grafana/metrictank/conf"
@@ -23,7 +24,6 @@ var (
 	kafkaVersionStr string
 	keyCache        *keycache.KeyCache
 
-	partitioner *p.Kafka
 	schemasConf string
 
 	publishedMD     = stats.NewCounterRate32("output.kafka.published.metricdata")
@@ -34,23 +34,29 @@ var (
 	sendErrProducer = stats.NewCounterRate32("metrics.send_error.producer")
 	sendErrOther    = stats.NewCounterRate32("metrics.send_error.other")
 
-	topic           string
-	codec           string
-	enabled         bool
-	partitionScheme string
-	maxMessages     int
-	v2              bool
-	v2Org           bool
-	v2ClearInterval time.Duration
-	flushFreq       time.Duration
+	topicsStr           string
+	codec               string
+	enabled             bool
+	partitionSchemesStr string
+	maxMessages         int
+	v2                  bool
+	v2Org               bool
+	v2ClearInterval     time.Duration
+	flushFreq           time.Duration
 
 	bufferPool   = util.NewBufferPool()
 	bufferPool33 = util.NewBufferPool33()
 )
 
+type topicSettings struct {
+	name        string
+	partitioner *p.Kafka
+}
+
 type mtPublisher struct {
 	schemas      *conf.Schemas
 	autoInterval bool
+	topics       []topicSettings
 }
 
 type Partitioner interface {
@@ -58,10 +64,10 @@ type Partitioner interface {
 }
 
 func init() {
-	flag.StringVar(&topic, "metrics-topic", "mdm", "topic for metrics")
+	flag.StringVar(&topicsStr, "metrics-topic", "mdm", "topic for metrics (may be given multiple times as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
 	flag.BoolVar(&enabled, "metrics-publish", false, "enable metric publishing")
-	flag.StringVar(&partitionScheme, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries)")
+	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries) (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.DurationVar(&flushFreq, "metrics-flush-freq", time.Millisecond*50, "The best-effort frequency of flushes to kafka")
 	flag.IntVar(&maxMessages, "metrics-max-messages", 5000, "The maximum number of messages the producer will send in a single request")
 	flag.StringVar(&schemasConf, "schemas-file", "/etc/gw/storage-schemas.conf", "path to carbon storage-schemas.conf file")
@@ -85,6 +91,31 @@ func getCompression(codec string) sarama.CompressionCodec {
 	}
 }
 
+func parseTopicSettings(partitionSchemesStr, topicsStr string) ([]topicSettings, error) {
+	var topics []topicSettings
+	partitionSchemes := strings.Split(partitionSchemesStr, ",")
+	for i, topicName := range strings.Split(topicsStr, ",") {
+		topicName = strings.TrimSpace(topicName)
+		var partitioner *p.Kafka
+		if len(partitionSchemes) == 1 && i > 0 {
+			// if only one partition scheme is specified, share first partitioner
+			partitioner = topics[0].partitioner
+		} else {
+			var err error
+			partitioner, err = p.NewKafka(strings.TrimSpace(partitionSchemes[i]))
+			if err != nil {
+				return nil, err
+			}
+		}
+		topic := topicSettings{
+			name:        topicName,
+			partitioner: partitioner,
+		}
+		topics = append(topics, topic)
+	}
+	return topics, nil
+}
+
 func New(broker string, autoInterval bool) *mtPublisher {
 	if !enabled {
 		return nil
@@ -99,17 +130,17 @@ func New(broker string, autoInterval bool) *mtPublisher {
 		autoInterval: autoInterval,
 	}
 
+	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr)
+	if err != nil {
+		log.Fatalf("failed to initialize partitioner: %s", err)
+	}
+
 	if autoInterval {
 		schemas, err := getSchemas(schemasConf)
 		if err != nil {
 			log.Fatalf("failed to load schemas config. %s", err)
 		}
 		mp.schemas = schemas
-	}
-
-	partitioner, err = p.NewKafka(partitionScheme)
-	if err != nil {
-		log.Fatalf("failed to initialize partitioner: %s", err)
 	}
 
 	// We are looking for strong consistency semantics.
@@ -152,15 +183,20 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 		return nil
 	}
 
+	if len(m.topics) == 0 {
+		return nil
+	}
+
 	var err error
 
-	payload := make([]*sarama.ProducerMessage, len(metrics))
+	metricsCount := len(metrics)
+	payload := make([]*sarama.ProducerMessage, metricsCount*len(m.topics))
 	pre := time.Now()
 	pubMD := 0
 	pubMP := 0
 	pubMPNO := 0
 
-	for i, metric := range metrics {
+	for metricIndex, metric := range metrics {
 		if metric.Interval == 0 {
 			if m.autoInterval {
 				_, s := m.schemas.Match(metric.Name, 0)
@@ -216,14 +252,18 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			pubMD++
 		}
 
-		key, err := partitioner.GetPartitionKey(metric, nil)
-		if err != nil {
-			return err
-		}
-		payload[i] = &sarama.ProducerMessage{
-			Key:   sarama.ByteEncoder(key),
-			Topic: topic,
-			Value: sarama.ByteEncoder(data),
+		for topicIndex, topic := range m.topics {
+			key, err := topic.partitioner.GetPartitionKey(metric, nil)
+			if err != nil {
+				return err
+			}
+			// pack messages with the following layout:
+			// [ (topic0, metric0), (topic0, metric1), (topic1, metric0), (topic1, metric1), ...]
+			payload[topicIndex*metricsCount+metricIndex] = &sarama.ProducerMessage{
+				Key:   sarama.ByteEncoder(key),
+				Topic: topic.name,
+				Value: sarama.ByteEncoder(data),
+			}
 		}
 
 		messagesSize.Value(len(data))
@@ -231,7 +271,10 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 
 	defer func() {
 		var buf []byte
-		for _, msg := range payload {
+		// each buffer in payload is used multiple times (once per topic)
+		// release buffers only once by taking advantage of payload's layout:
+		// all metrics for the first topic are sequentially packed at its beginning
+		for _, msg := range payload[:len(metrics)] {
 			buf, _ = msg.Value.Encode()
 			if cap(buf) == 33 {
 				bufferPool33.Put(buf)
@@ -259,7 +302,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	publishedMD.Add(pubMD)
 	publishedMP.Add(pubMP)
 	publishedMPNO.Add(pubMPNO)
-	log.Debugf("published %d metrics", pubMD+pubMP)
+	log.Debugf("published %d metrics to topics %v", pubMD+pubMP, m.topics)
 	return nil
 }
 
