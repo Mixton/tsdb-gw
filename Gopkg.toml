@@ -76,7 +76,7 @@ ignored = [
 
 [[constraint]]
   name = "github.com/uber/jaeger-client-go"
-  version = "2.15.0"
+  version = "2.16.0"
   source = "https://github.com/jaegertracing/jaeger-client-go.git"
 
 [[constraint]]
@@ -89,7 +89,7 @@ ignored = [
 
 [[constraint]]
   name = "github.com/raintank/schema"
-  version = "^2"
+  revision = "49c3f30550ed40c22931bc7f46e5c3a7676236b4"
 
 [[override]]
   name = "github.com/sercand/kuberesolver"
