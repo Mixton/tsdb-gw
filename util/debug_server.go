@@ -33,7 +33,7 @@ func StartDebugServer() {
 	mux.Handle("/debug/pprof/allocs", pprof.Handler("allocs"))
 
 	go func() {
-		log.Println(http.ListenAndServe(":6060", mux))
+		log.Println(http.ListenAndServe("127.0.0.1:6060", mux))
 	}()
 }
 
