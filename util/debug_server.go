@@ -1,12 +1,41 @@
-package api
+package util
 
 import (
+	"log"
 	"net/http"
 	"runtime"
-	rpprof "runtime/pprof"
 	"strconv"
 	"time"
+
+	"net/http/pprof"
+	rpprof "runtime/pprof"
 )
+
+// StartDebugServer starts a new http server listening on :6060. It uses
+// custom handlers for block and mutex, and registers all the normal
+// pprof handlers for everything else.
+func StartDebugServer() {
+	mux := http.NewServeMux()
+
+	// our custom handlers
+	mux.HandleFunc("/debug/pprof/block", blockHandler)
+	mux.HandleFunc("/debug/pprof/mutex", mutexHandler)
+
+	// normal pprof handlers
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+	mux.Handle("/debug/pprof/heap", pprof.Handler("heap"))
+	mux.Handle("/debug/pprof/threadcreate", pprof.Handler("threadcreate"))
+	mux.Handle("/debug/pprof/goroutine", pprof.Handler("goroutine"))
+	mux.Handle("/debug/pprof/allocs", pprof.Handler("allocs"))
+
+	go func() {
+		log.Println(http.ListenAndServe(":6060", mux))
+	}()
+}
 
 // blockhandler writes out a blocking profile
 // similar to the standard library handler,

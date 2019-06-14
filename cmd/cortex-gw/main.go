@@ -103,6 +103,7 @@ func main() {
 	initRoutes(api, writeProxy, *enforceRoles)
 
 	ms := util.NewMetricsServer(*metricsAddr)
+	util.StartDebugServer()
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
