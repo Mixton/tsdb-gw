@@ -129,7 +129,6 @@ func main() {
 	initRoutes(api, *enforceRoles)
 
 	ms := util.NewMetricsServer(*metricsAddr)
-	util.StartDebugServer()
 
 	log.Infof("Starting %v ...", app)
 	done := make(chan struct{})
