@@ -35,6 +35,7 @@ var (
 	sendErrOther    = stats.NewCounterRate32("metrics.send_error.other")
 
 	topicsStr           string
+	onlyOrgIds          util.Int64SliceFlag
 	codec               string
 	enabled             bool
 	partitionSchemesStr string
@@ -51,6 +52,7 @@ var (
 type topicSettings struct {
 	name        string
 	partitioner *p.Kafka
+	onlyOrgId   int
 }
 
 type mtPublisher struct {
@@ -65,6 +67,7 @@ type Partitioner interface {
 
 func init() {
 	flag.StringVar(&topicsStr, "metrics-topic", "mdm", "topic for metrics (may be given multiple times as a comma-separated list)")
+	flag.Var(&onlyOrgIds, "only-org-id", "restrict publishing data belonging to org id; 0 means no restriction (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
 	flag.BoolVar(&enabled, "metrics-publish", false, "enable metric publishing")
 	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries) (may be given multiple times, once per topic, as a comma-separated list)")
@@ -91,7 +94,7 @@ func getCompression(codec string) sarama.CompressionCodec {
 	}
 }
 
-func parseTopicSettings(partitionSchemesStr, topicsStr string) ([]topicSettings, error) {
+func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64) ([]topicSettings, error) {
 	var topics []topicSettings
 	partitionSchemes := strings.Split(partitionSchemesStr, ",")
 	for i, topicName := range strings.Split(topicsStr, ",") {
@@ -107,9 +110,20 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string) ([]topicSettings,
 				return nil, err
 			}
 		}
+		var onlyOrgId int64
+		if len(onlyOrgIds) == 0 {
+			// if no only-org-id flag is specified, assume no restriction on org id
+			onlyOrgId = 0
+		} else if len(onlyOrgIds) == 1 {
+			// if only one only-org-id flag is specified, use same restriction for all topics
+			onlyOrgId = onlyOrgIds[0]
+		} else {
+			onlyOrgId = onlyOrgIds[i]
+		}
 		topic := topicSettings{
 			name:        topicName,
 			partitioner: partitioner,
+			onlyOrgId:   int(onlyOrgId),
 		}
 		topics = append(topics, topic)
 	}
@@ -130,7 +144,7 @@ func New(broker string, autoInterval bool) *mtPublisher {
 		autoInterval: autoInterval,
 	}
 
-	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr)
+	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr, onlyOrgIds)
 	if err != nil {
 		log.Fatalf("failed to initialize partitioner: %s", err)
 	}
@@ -190,13 +204,15 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	var err error
 
 	metricsCount := len(metrics)
-	payload := make([]*sarama.ProducerMessage, metricsCount*len(m.topics))
+	// plan for a maximum of metrics*topics messages to be sent
+	payload := make([]*sarama.ProducerMessage, 0, metricsCount*len(m.topics))
 	pre := time.Now()
 	pubMD := 0
 	pubMP := 0
 	pubMPNO := 0
+	buffersToRelease := [][]byte{}
 
-	for metricIndex, metric := range metrics {
+	for _, metric := range metrics {
 		if metric.Interval == 0 {
 			if m.autoInterval {
 				_, s := m.schemas.Match(metric.Name, 0)
@@ -252,17 +268,21 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			pubMD++
 		}
 
-		for topicIndex, topic := range m.topics {
+		buffersToRelease = append(buffersToRelease, data)
+
+		for _, topic := range m.topics {
 			key, err := topic.partitioner.GetPartitionKey(metric, nil)
 			if err != nil {
 				return err
 			}
-			// pack messages with the following layout:
-			// [ (topic0, metric0), (topic0, metric1), (topic1, metric0), (topic1, metric1), ...]
-			payload[topicIndex*metricsCount+metricIndex] = &sarama.ProducerMessage{
-				Key:   sarama.ByteEncoder(key),
-				Topic: topic.name,
-				Value: sarama.ByteEncoder(data),
+
+			if topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId {
+				message := &sarama.ProducerMessage{
+					Key:   sarama.ByteEncoder(key),
+					Topic: topic.name,
+					Value: sarama.ByteEncoder(data),
+				}
+				payload = append(payload, message)
 			}
 		}
 
@@ -270,12 +290,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	}
 
 	defer func() {
-		var buf []byte
-		// each buffer in payload is used multiple times (once per topic)
-		// release buffers only once by taking advantage of payload's layout:
-		// all metrics for the first topic are sequentially packed at its beginning
-		for _, msg := range payload[:len(metrics)] {
-			buf, _ = msg.Value.Encode()
+		for _, buf := range buffersToRelease {
 			if cap(buf) == 33 {
 				bufferPool33.Put(buf)
 			} else {

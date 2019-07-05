@@ -11,6 +11,7 @@ import (
 	"github.com/grafana/metrictank/cluster/partitioner"
 	"github.com/raintank/schema"
 	"github.com/raintank/tsdb-gw/publish/kafka/keycache"
+	"github.com/raintank/tsdb-gw/util"
 )
 
 func Test_parseTopicSettings(t *testing.T) {
@@ -18,6 +19,7 @@ func Test_parseTopicSettings(t *testing.T) {
 		name                string
 		partitionSchemesStr string
 		topicsStr           string
+		onlyOrgIdsStr       string
 		expected            []topicSettings
 		wantErr             bool
 	}{
@@ -25,6 +27,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "no_topic",
 			partitionSchemesStr: "",
 			topicsStr:           "",
+			onlyOrgIdsStr:       "",
 			expected:            []topicSettings{},
 			wantErr:             true,
 		},
@@ -39,6 +42,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 			},
 			wantErr: false,
@@ -47,6 +51,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "two_topics_same_scheme",
 			partitionSchemesStr: "bySeries,bySeries",
 			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
 				topicSettings{
 					name: "testTopic1",
@@ -54,6 +59,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
@@ -61,6 +67,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 			},
 			wantErr: false,
@@ -69,6 +76,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "two_topics_different_scheme",
 			partitionSchemesStr: "bySeries,byOrg",
 			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
 				topicSettings{
 					name: "testTopic1",
@@ -76,6 +84,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
@@ -83,6 +92,32 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "byOrg",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:                "two_topics_different_scheme_orgid",
+			partitionSchemesStr: "bySeries,byOrg",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "1,10",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 1,
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
 				},
 			},
 			wantErr: false,
@@ -91,6 +126,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "two_topics_with_spaces",
 			partitionSchemesStr: "bySeries  ,byOrg",
 			topicsStr:           "testTopic1,  testTopic2",
+			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
 				topicSettings{
 					name: "testTopic1",
@@ -98,6 +134,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
@@ -105,6 +142,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "byOrg",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 			},
 			wantErr: false,
@@ -113,6 +151,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "two_topics_shared_scheme",
 			partitionSchemesStr: "bySeries",
 			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
 				topicSettings{
 					name: "testTopic1",
@@ -120,6 +159,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
@@ -127,6 +167,32 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:                "two_topics_shared_scheme_and_org_id",
+			partitionSchemesStr: "bySeries",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "10",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
 				},
 			},
 			wantErr: false,
@@ -135,6 +201,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			name:                "one_topic_more_schemes_ignored",
 			partitionSchemesStr: "bySeries,byOrg",
 			topicsStr:           "testTopic",
+			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
 				topicSettings{
 					name: "testTopic",
@@ -142,6 +209,7 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
+					onlyOrgId: 0,
 				},
 			},
 			wantErr: false,
@@ -149,7 +217,9 @@ func Test_parseTopicSettings(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr)
+			onlyOrgIds := util.Int64SliceFlag{}
+			onlyOrgIds.Set(test.onlyOrgIdsStr)
+			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr, onlyOrgIds)
 			if (err != nil) != test.wantErr {
 				t.Errorf("parseTopicSettings() error = %v, wantErr %v", err, test.wantErr)
 				return
@@ -157,6 +227,9 @@ func Test_parseTopicSettings(t *testing.T) {
 			for i, topicSetting := range got {
 				if topicSetting.name != test.expected[i].name {
 					t.Errorf("parseTopicSettings(): incorrect topic name %s, expects %s", topicSetting.name, test.expected[i].name)
+				}
+				if topicSetting.onlyOrgId != test.expected[i].onlyOrgId {
+					t.Errorf("parseTopicSettings(): incorrect onlyOrgId %d, expects %d", topicSetting.onlyOrgId, test.expected[i].onlyOrgId)
 				}
 				if topicSetting.partitioner.PartitionBy != test.expected[i].partitioner.PartitionBy {
 					t.Errorf("parseTopicSettings(): incorrect partition scheme %s, expects %s", topicSetting.partitioner.PartitionBy, test.expected[i].partitioner.PartitionBy)
@@ -201,17 +274,48 @@ func Test_Publish(t *testing.T) {
 		metric.SetId()
 	}
 
+	dataOrgId1 := []*schema.MetricData{
+		{
+			Name:     "a.b.c",
+			OrgId:    1,
+			Interval: 10,
+		},
+		{
+			Name:     "a.b.c.d",
+			OrgId:    1,
+			Interval: 10,
+		},
+	}
+	dataOrgId10 := []*schema.MetricData{
+		{
+			Name:     "a.b.c10",
+			OrgId:    10,
+			Interval: 10,
+		},
+		{
+			Name:     "a.b.c20",
+			OrgId:    10,
+			Interval: 10,
+		},
+	}
+	dataManyOrgIds := append(dataOrgId1, dataOrgId10...)
+	for _, metric := range dataManyOrgIds {
+		metric.SetId()
+	}
+
 	tests := []struct {
-		name    string
-		topics  []topicSettings
-		data    []*schema.MetricData
-		wantErr bool
+		name         string
+		topics       []topicSettings
+		data         []*schema.MetricData
+		expectedData map[string][]*schema.MetricData
+		wantErr      bool
 	}{
 		{
-			name:    "no_topic",
-			topics:  []topicSettings{},
-			data:    dataManyPoints,
-			wantErr: false,
+			name:         "no_topic",
+			topics:       []topicSettings{},
+			data:         dataManyPoints,
+			expectedData: nil,
+			wantErr:      false,
 		},
 		{
 			name: "single_topic_single_point",
@@ -224,7 +328,10 @@ func Test_Publish(t *testing.T) {
 					},
 				},
 			},
-			data:    dataSinglePoint,
+			data: dataSinglePoint,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataSinglePoint,
+			},
 			wantErr: false,
 		},
 		{
@@ -238,7 +345,28 @@ func Test_Publish(t *testing.T) {
 					},
 				},
 			},
-			data:    dataManyPoints,
+			data: dataManyPoints,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataManyPoints,
+			},
+			wantErr: false,
+		},
+		{
+			name: "single_topic_restricted_org_id",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
+				},
+			},
+			data: dataManyOrgIds,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataOrgId10,
+			},
 			wantErr: false,
 		},
 		{
@@ -259,7 +387,11 @@ func Test_Publish(t *testing.T) {
 					},
 				},
 			},
-			data:    dataSinglePoint,
+			data: dataSinglePoint,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic1": dataSinglePoint,
+				"testTopic2": dataSinglePoint,
+			},
 			wantErr: false,
 		},
 		{
@@ -280,7 +412,65 @@ func Test_Publish(t *testing.T) {
 					},
 				},
 			},
-			data:    dataManyPoints,
+			data: dataManyPoints,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic1": dataManyPoints,
+				"testTopic2": dataManyPoints,
+			},
+			wantErr: false,
+		},
+		{
+			name: "two_topics_many_points_restricted_org_id",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 1,
+				},
+				topicSettings{
+					name: "testTopic10",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
+				},
+			},
+			data: dataManyOrgIds,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic1":  dataOrgId1,
+				"testTopic10": dataOrgId10,
+			},
+			wantErr: false,
+		},
+		{
+			name: "two_topics_many_points_restricted_org_id_with_0",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 0, // 0 means no restriction on orgid
+				},
+				topicSettings{
+					name: "testTopic10",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
+				},
+			},
+			data: dataManyOrgIds,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic1":  dataManyOrgIds,
+				"testTopic10": dataOrgId10,
+			},
 			wantErr: false,
 		},
 	}
@@ -294,13 +484,17 @@ func Test_Publish(t *testing.T) {
 			producer = mockProducer
 			keyCache = keycache.NewKeyCache(v2ClearInterval)
 
-			// check that each MetricData is sent once per topic when calling Publish
-			for range test.topics {
-				for i, _ := range test.data {
-					expectedMd := test.data[i]
+			// check that each MetricData is sent to each topic (respecting onlyOrgId) when calling Publish
+			for _, metricData := range test.data {
+				for _, topic := range test.topics {
+					if !sliceContains(test.expectedData[topic.name], metricData) {
+						// metricData is not supposed to be sent to topic
+						continue
+					}
+					expectedMd := metricData
 					mockProducer.ExpectSendMessageWithCheckerFunctionAndSucceed(func(sentData []byte) error {
-						expectedData := make([]byte, 0)
-						expectedData, err := expectedMd.MarshalMsg(expectedData)
+						expectedDataBuf := make([]byte, 0)
+						expectedData, err := expectedMd.MarshalMsg(expectedDataBuf)
 						if err != nil {
 							return err
 						}
@@ -323,5 +517,13 @@ func Test_Publish(t *testing.T) {
 			}
 		})
 	}
+}
 
+func sliceContains(slice []*schema.MetricData, element *schema.MetricData) bool {
+	for _, x := range slice {
+		if x == element {
+			return true
+		}
+	}
+	return false
 }
