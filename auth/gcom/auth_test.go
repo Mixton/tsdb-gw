@@ -10,31 +10,32 @@ import (
 	"time"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/raintank/tsdb-gw/util"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestFlags(t *testing.T) {
 	Convey("When setting auth-valid-org-id to empty string", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 0)
 	})
 	Convey("When setting auth-valid-org-id has no values", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", ", ")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 0)
 	})
 
 	Convey("When setting auth-valid-org-id to invalid value", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "foo")
 		c.So(err, ShouldHaveSameTypeAs, &strconv.NumError{})
 	})
 
 	Convey("When setting auth-valid-org-id to single org", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "10")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 1)
@@ -42,7 +43,7 @@ func TestFlags(t *testing.T) {
 	})
 
 	Convey("When setting auth-valid-org-id to many orgs", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", "10,1,17")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 3)
@@ -52,7 +53,7 @@ func TestFlags(t *testing.T) {
 	})
 
 	Convey("When auth-valid-org-id setting has spaces", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", " 10 , 1, 17")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 3)
@@ -62,7 +63,7 @@ func TestFlags(t *testing.T) {
 	})
 
 	Convey("When auth-valid-org-id setting has repeated commas", t, func(c C) {
-		validOrgIds = int64SliceFlag{}
+		validOrgIds = util.Int64SliceFlag{}
 		err := flag.Set("auth-valid-org-id", ",,,10")
 		c.So(err, ShouldBeNil)
 		c.So(validOrgIds, ShouldHaveLength, 1)
@@ -72,7 +73,7 @@ func TestFlags(t *testing.T) {
 func TestAuth(t *testing.T) {
 	mockTransport := httpmock.NewMockTransport()
 	client.Transport = mockTransport
-	validOrgIds = int64SliceFlag{}
+	validOrgIds = util.Int64SliceFlag{}
 	testUser := SignedInUser{
 		Id:        3,
 		OrgName:   "awoods Test",
@@ -136,7 +137,7 @@ func TestAuth(t *testing.T) {
 
 		originalValidOrgIds := validOrgIds
 		defer func() { validOrgIds = originalValidOrgIds }()
-		validOrgIds = int64SliceFlag{1}
+		validOrgIds = util.Int64SliceFlag{1}
 
 		user, err := Auth("key", "foo")
 		c.So(user, ShouldBeNil)
@@ -153,7 +154,7 @@ func TestAuth(t *testing.T) {
 		originalValidOrgIds := validOrgIds
 		defer func() { validOrgIds = originalValidOrgIds }()
 
-		validOrgIds = int64SliceFlag{3, 4, 5}
+		validOrgIds = util.Int64SliceFlag{3, 4, 5}
 		user, err := Auth("key", "foo")
 		c.So(user, ShouldBeNil)
 		c.So(err, ShouldEqual, ErrInvalidOrgId)
@@ -169,7 +170,7 @@ func TestAuth(t *testing.T) {
 		originalValidOrgIds := validOrgIds
 		defer func() { validOrgIds = originalValidOrgIds }()
 
-		validOrgIds = int64SliceFlag{1, 2, 3, 4}
+		validOrgIds = util.Int64SliceFlag{1, 2, 3, 4}
 		user, err := Auth("key", "foo")
 		c.So(err, ShouldBeNil)
 		c.So(user.Role, ShouldEqual, testUser.Role)
