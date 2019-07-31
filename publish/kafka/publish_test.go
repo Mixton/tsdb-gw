@@ -123,6 +123,56 @@ func Test_parseTopicSettings(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name:                "two_topics_mismatched_scheme_count",
+			partitionSchemesStr: "bySeries,byOrg,byOrg",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 0,
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 0,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name:                "two_topics_mismatched_only_org_id_count",
+			partitionSchemesStr: "bySeries,byOrg",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "1,10,42",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 1,
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId: 10,
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name:                "two_topics_with_spaces",
 			partitionSchemesStr: "bySeries  ,byOrg",
 			topicsStr:           "testTopic1,  testTopic2",
@@ -198,7 +248,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:                "one_topic_more_schemes_ignored",
+			name:                "one_topic_mismatched_more_schemes",
 			partitionSchemesStr: "bySeries,byOrg",
 			topicsStr:           "testTopic",
 			onlyOrgIdsStr:       "",
@@ -212,7 +262,7 @@ func Test_parseTopicSettings(t *testing.T) {
 					onlyOrgId: 0,
 				},
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 	}
 	for _, test := range tests {

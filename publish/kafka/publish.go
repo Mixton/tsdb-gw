@@ -97,7 +97,14 @@ func getCompression(codec string) sarama.CompressionCodec {
 func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64) ([]topicSettings, error) {
 	var topics []topicSettings
 	partitionSchemes := strings.Split(partitionSchemesStr, ",")
-	for i, topicName := range strings.Split(topicsStr, ",") {
+	topicsStrList := strings.Split(topicsStr, ",")
+	if len(partitionSchemes) > 1 && len(partitionSchemes) != len(topicsStrList) {
+		return nil, errors.New("More partition schemes (metrics-partition-scheme) than topics (metrics-topic)")
+	}
+	if len(onlyOrgIds) > 1 && len(onlyOrgIds) != len(topicsStrList) {
+		return nil, errors.New("More org ids (only-org-id) than topics (metrics-topic)")
+	}
+	for i, topicName := range topicsStrList {
 		topicName = strings.TrimSpace(topicName)
 		var partitioner *p.Kafka
 		if len(partitionSchemes) == 1 && i > 0 {
