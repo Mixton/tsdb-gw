@@ -37,6 +37,6 @@ func (i *Int64SliceFlag) Set(value string) error {
 }
 
 func (i *Int64SliceFlag) String() string {
-	// This is just a 1-liner to convert print a slice as a command separated list.
+	// This is just a 1-liner to print a slice as a comma separated list.
 	return strings.Trim(strings.Replace(fmt.Sprint(*i), " ", ", ", -1), "[]")
 }
