@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/Shopify/sarama"
@@ -20,6 +21,7 @@ func Test_parseTopicSettings(t *testing.T) {
 		partitionSchemesStr string
 		topicsStr           string
 		onlyOrgIdsStr       string
+		discardPrefixesStr  string
 		expected            []topicSettings
 		wantErr             bool
 	}{
@@ -28,6 +30,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			partitionSchemesStr: "",
 			topicsStr:           "",
 			onlyOrgIdsStr:       "",
+			discardPrefixesStr:  "",
 			expected:            []topicSettings{},
 			wantErr:             true,
 		},
@@ -42,7 +45,8 @@ func Test_parseTopicSettings(t *testing.T) {
 						PartitionBy: "bySeries",
 						Partitioner: sarama.NewHashPartitioner(""),
 					},
-					onlyOrgId: 0,
+					onlyOrgId:       0,
+					discardPrefixes: nil,
 				},
 			},
 			wantErr: false,
@@ -264,12 +268,77 @@ func Test_parseTopicSettings(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name:                "one_topic_mismatched_more_discard_prefixes",
+			partitionSchemesStr: "bySeries",
+			topicsStr:           "testTopic",
+			discardPrefixesStr:  "prefix1a-|prefix1b,prefix2",
+			onlyOrgIdsStr:       "",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{"prefix1a-|prefix1b"},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name:                "single_topic_discard_prefix",
+			partitionSchemesStr: "bySeries",
+			topicsStr:           "testTopic",
+			discardPrefixesStr:  "prefix1",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{"prefix1"},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:                "two_topics_discard_many_prefixes",
+			partitionSchemesStr: "bySeries,bySeries",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
+			discardPrefixesStr:  "prefix1a|prefix1b|prefix1c,prefix2a|prefix2b",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{"prefix1a", "prefix1b", "prefix1c"},
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{"prefix2a", "prefix2b"},
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			onlyOrgIds := util.Int64SliceFlag{}
 			onlyOrgIds.Set(test.onlyOrgIdsStr)
-			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr, onlyOrgIds)
+			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr, onlyOrgIds, test.discardPrefixesStr)
 			if (err != nil) != test.wantErr {
 				t.Errorf("parseTopicSettings() error = %v, wantErr %v", err, test.wantErr)
 				return
@@ -286,6 +355,9 @@ func Test_parseTopicSettings(t *testing.T) {
 				}
 				if topicSetting.partitioner.Partitioner == nil {
 					t.Errorf("parseTopicSettings(): nil partitioner")
+				}
+				if !reflect.DeepEqual(topicSetting.discardPrefixes, test.expected[i].discardPrefixes) {
+					t.Errorf("parseTopicSettings(): incorrect discard prefixes %v, expects %v", topicSetting.discardPrefixes, test.expected[i].discardPrefixes)
 				}
 			}
 		})
