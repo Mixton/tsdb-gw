@@ -333,6 +333,34 @@ func Test_parseTopicSettings(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name:                "two_topics_discard_prefix_second_only",
+			partitionSchemesStr: "bySeries,bySeries",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "",
+			discardPrefixesStr:  ",prefix2a|prefix2b",
+			expected: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{},
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					onlyOrgId:       0,
+					discardPrefixes: []string{"prefix2a", "prefix2b"},
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
