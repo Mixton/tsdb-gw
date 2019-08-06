@@ -492,6 +492,40 @@ func Test_Publish(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "single_topic_discard_all_prefixes",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					discardPrefixes: []string{"a.b.c"},
+				},
+			},
+			data:         dataManyPoints,
+			expectedData: nil,
+			wantErr:      false,
+		},
+		{
+			name: "single_topic_discard_one_prefix",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					discardPrefixes: []string{"a.b.c2"},
+				},
+			},
+			data: dataManyPoints,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataManyPoints[:len(dataManyPoints)-1],
+			},
+			wantErr: false,
+		},
+		{
 			name: "two_topics_single_point",
 			topics: []topicSettings{
 				topicSettings{
@@ -538,6 +572,32 @@ func Test_Publish(t *testing.T) {
 			expectedData: map[string][]*schema.MetricData{
 				"testTopic1": dataManyPoints,
 				"testTopic2": dataManyPoints,
+			},
+			wantErr: false,
+		},
+		{
+			name: "two_topics_many_points_discard_prefix_one_topic",
+			topics: []topicSettings{
+				topicSettings{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "bySeries",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+				},
+				topicSettings{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						PartitionBy: "byOrg",
+						Partitioner: sarama.NewHashPartitioner(""),
+					},
+					discardPrefixes: []string{"a.b.c2"},
+				},
+			},
+			data: dataManyPoints,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic1": dataManyPoints,
+				"testTopic2": dataManyPoints[:len(dataManyPoints)-1],
 			},
 			wantErr: false,
 		},

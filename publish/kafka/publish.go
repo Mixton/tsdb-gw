@@ -306,7 +306,16 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				return err
 			}
 
-			if topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId {
+			prefixDiscarded := false
+			for _, prefix := range topic.discardPrefixes {
+				if strings.HasPrefix(metric.Name, prefix) {
+					prefixDiscarded = true
+					break
+				}
+			}
+
+			if (topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId) &&
+				!prefixDiscarded {
 				message := &sarama.ProducerMessage{
 					Key:   sarama.ByteEncoder(key),
 					Topic: topic.name,
