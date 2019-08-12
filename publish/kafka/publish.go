@@ -36,6 +36,7 @@ var (
 
 	topicsStr           string
 	onlyOrgIds          util.Int64SliceFlag
+	discardPrefixesStr  string
 	codec               string
 	enabled             bool
 	partitionSchemesStr string
@@ -50,9 +51,10 @@ var (
 )
 
 type topicSettings struct {
-	name        string
-	partitioner *p.Kafka
-	onlyOrgId   int
+	name            string
+	partitioner     *p.Kafka
+	onlyOrgId       int
+	discardPrefixes []string
 }
 
 type mtPublisher struct {
@@ -68,6 +70,7 @@ type Partitioner interface {
 func init() {
 	flag.StringVar(&topicsStr, "metrics-topic", "mdm", "topic for metrics (may be given multiple times as a comma-separated list)")
 	flag.Var(&onlyOrgIds, "only-org-id", "restrict publishing data belonging to org id; 0 means no restriction (may be given multiple times, once per topic, as a comma-separated list)")
+	flag.StringVar(&discardPrefixesStr, "discard-prefixes", "", "discard data points starting with one of the given prefixes separated by | (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
 	flag.BoolVar(&enabled, "metrics-publish", false, "enable metric publishing")
 	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries) (may be given multiple times, once per topic, as a comma-separated list)")
@@ -94,15 +97,22 @@ func getCompression(codec string) sarama.CompressionCodec {
 	}
 }
 
-func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64) ([]topicSettings, error) {
+func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64, discardPrefixesStr string) ([]topicSettings, error) {
 	var topics []topicSettings
 	partitionSchemes := strings.Split(partitionSchemesStr, ",")
 	topicsStrList := strings.Split(topicsStr, ",")
+	var discardPrefixesStrList []string
+	if discardPrefixesStr != "" {
+		discardPrefixesStrList = strings.Split(discardPrefixesStr, ",")
+	}
 	if len(partitionSchemes) > 1 && len(partitionSchemes) != len(topicsStrList) {
 		return nil, errors.New("More partition schemes (metrics-partition-scheme) than topics (metrics-topic)")
 	}
 	if len(onlyOrgIds) > 1 && len(onlyOrgIds) != len(topicsStrList) {
 		return nil, errors.New("More org ids (only-org-id) than topics (metrics-topic)")
+	}
+	if len(discardPrefixesStrList) > 0 && len(discardPrefixesStrList) != len(topicsStrList) {
+		return nil, errors.New("More discard prefixes (discard-prefixes) than topics (metrics-topic)")
 	}
 	for i, topicName := range topicsStrList {
 		topicName = strings.TrimSpace(topicName)
@@ -127,11 +137,21 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 		} else {
 			onlyOrgId = onlyOrgIds[i]
 		}
+
 		topic := topicSettings{
 			name:        topicName,
 			partitioner: partitioner,
 			onlyOrgId:   int(onlyOrgId),
 		}
+
+		if len(discardPrefixesStrList) > 0 {
+			// split prefixes by '|'; similar to strings.Split() but removes empty splits
+			f := func(c rune) bool {
+				return c == '|'
+			}
+			topic.discardPrefixes = strings.FieldsFunc(discardPrefixesStrList[i], f)
+		}
+
 		topics = append(topics, topic)
 	}
 	return topics, nil
@@ -151,7 +171,7 @@ func New(broker string, autoInterval bool) *mtPublisher {
 		autoInterval: autoInterval,
 	}
 
-	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr, onlyOrgIds)
+	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr, onlyOrgIds, discardPrefixesStr)
 	if err != nil {
 		log.Fatalf("failed to initialize partitioner: %s", err)
 	}
@@ -287,7 +307,16 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				return err
 			}
 
-			if topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId {
+			prefixDiscarded := false
+			for _, prefix := range topic.discardPrefixes {
+				if strings.HasPrefix(metric.Name, prefix) {
+					prefixDiscarded = true
+					break
+				}
+			}
+
+			if (topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId) &&
+				!prefixDiscarded {
 				message := &sarama.ProducerMessage{
 					Key:   sarama.ByteEncoder(key),
 					Topic: topic.name,
