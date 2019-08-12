@@ -214,9 +214,9 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	// plan for a maximum of metrics*topics messages to be sent
 	payload := make([]*sarama.ProducerMessage, 0, metricsCount*len(m.topics))
 	pre := time.Now()
-	pubMD := 0
-	pubMP := 0
-	pubMPNO := 0
+	pubMD := make(map[string]int)
+	pubMP := make(map[string]int)
+	pubMPNO := make(map[string]int)
 	buffersToRelease := [][]byte{}
 
 	for _, metric := range metrics {
@@ -230,6 +230,10 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				return errors.New("need to deduce interval but cannot")
 			}
 		}
+
+		isMD := false
+		isMP := false
+		isMPNO := false
 
 		var data []byte
 		if v2 {
@@ -251,12 +255,12 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 					data = data[:33]                      // this range will contain valid data
 					data[0] = byte(msg.FormatMetricPoint) // store version in first byte
 					_, err = mp.Marshal32(data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-33
-					pubMP++
+					isMP = true
 				} else {
 					data = data[:29]                                // this range will contain valid data
 					data[0] = byte(msg.FormatMetricPointWithoutOrg) // store version in first byte
 					_, err = mp.MarshalWithoutOrg28(data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-29
-					pubMPNO++
+					isMPNO = true
 				}
 			} else {
 				data = bufferPool.Get()
@@ -264,7 +268,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				if err != nil {
 					return err
 				}
-				pubMD++
+				isMD = true
 			}
 		} else {
 			data = bufferPool.Get()
@@ -272,7 +276,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			if err != nil {
 				return err
 			}
-			pubMD++
+			isMD = true
 		}
 
 		buffersToRelease = append(buffersToRelease, data)
@@ -290,6 +294,13 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 					Value: sarama.ByteEncoder(data),
 				}
 				payload = append(payload, message)
+				if isMP {
+					pubMP[topic.name]++
+				} else if isMD {
+					pubMD[topic.name]++
+				} else if isMPNO {
+					pubMPNO[topic.name]++
+				}
 			}
 		}
 
@@ -321,10 +332,15 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	}
 
 	publishDuration.Value(time.Since(pre))
-	publishedMD.Add(pubMD)
-	publishedMP.Add(pubMP)
-	publishedMPNO.Add(pubMPNO)
-	log.Debugf("published %d metrics to topics %v", pubMD+pubMP, m.topics)
+	for _, topic := range m.topics {
+		pubTopicMD := pubMD[topic.name]
+		pubTopicMP := pubMP[topic.name]
+		pubTopicMPNO := pubMPNO[topic.name]
+		publishedMD.Add(pubTopicMD)
+		publishedMP.Add(pubTopicMP)
+		publishedMPNO.Add(pubTopicMPNO)
+		log.Debugf("published %d metrics to topic %s", pubTopicMD+pubTopicMP+pubTopicMPNO, topic.name)
+	}
 	return nil
 }
 
