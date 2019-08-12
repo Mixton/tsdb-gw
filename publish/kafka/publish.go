@@ -138,23 +138,20 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 			onlyOrgId = onlyOrgIds[i]
 		}
 
-		var discardPrefixes []string
-		if len(discardPrefixesStrList) == 0 {
-			discardPrefixes = nil
-		} else {
+		topic := topicSettings{
+			name:        topicName,
+			partitioner: partitioner,
+			onlyOrgId:   int(onlyOrgId),
+		}
+
+		if len(discardPrefixesStrList) > 0 {
 			// split prefixes by '|'; similar to strings.Split() but removes empty splits
 			f := func(c rune) bool {
 				return c == '|'
 			}
-			discardPrefixes = strings.FieldsFunc(discardPrefixesStrList[i], f)
+			topic.discardPrefixes = strings.FieldsFunc(discardPrefixesStrList[i], f)
 		}
 
-		topic := topicSettings{
-			name:            topicName,
-			partitioner:     partitioner,
-			onlyOrgId:       int(onlyOrgId),
-			discardPrefixes: discardPrefixes,
-		}
 		topics = append(topics, topic)
 	}
 	return topics, nil
