@@ -82,6 +82,9 @@ func validateToken(keyString string) (*SignedInUser, error) {
 
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
+	if err != nil {
+		return nil, err
+	}
 
 	if res.StatusCode >= 500 {
 		return nil, fmt.Errorf("Auth token could not be validated: %s", res.Status)
