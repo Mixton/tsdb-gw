@@ -29,7 +29,6 @@ var (
 	writeBPoolSize  = flag.Int("bpool-size", 100, "max number of byte buffers in the cortex write buffer pool")
 	writeBPoolWidth = flag.Int("bpool-width", 1024, "capacity of byte array provided by cortex write buffer pool")
 
-	errBadTag    = errors.New("unable to parse tags")
 	errNoMetrics = errors.New("no metrics provided in write request")
 
 	droppedSamplesTotal = promauto.NewCounterVec(

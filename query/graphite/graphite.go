@@ -19,11 +19,8 @@ import (
 var (
 	GraphiteUrl    *url.URL
 	WorldpingUrl   *url.URL
-	wpProxy        httputil.ReverseProxy
 	gProxy         httputil.ReverseProxy
 	timerangeLimit uint32
-
-	worldpingHack bool
 )
 
 type proxyRetryTransport struct {

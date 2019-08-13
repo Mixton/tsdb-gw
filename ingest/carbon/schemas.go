@@ -13,14 +13,6 @@ import (
 var err3Fields = errors.New("need 3 fields")
 var errBadTag = errors.New("can't parse tag")
 
-func getSchemas(file string) (*conf.Schemas, error) {
-	schemas, err := conf.ReadSchemas(file)
-	if err != nil {
-		return nil, err
-	}
-	return &schemas, nil
-}
-
 // parseMetric parses a buffer into a MetricData message, using the schemas to deduce the interval of the data.
 // The given orgId will be applied to the MetricData
 func parseMetric(buf []byte, schemas *conf.Schemas, orgId int) (*schema.MetricData, error) {

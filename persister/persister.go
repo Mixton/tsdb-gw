@@ -32,7 +32,6 @@ type Persister struct {
 // Config contains the configuration require to
 // create a Persister
 type Config struct {
-	prefix              string
 	interval            int
 	maxBufferSize       int
 	MetricsClientConfig metrics_client.Config
