@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/grafana/metrictank/conf"
+	"github.com/grafana/metrictank/schema"
 	"github.com/grafana/metrictank/stats"
 	"github.com/graphite-ng/carbon-relay-ng/input"
 	m20 "github.com/metrics20/go-metrics20/carbon20"
-	"github.com/grafana/metrictank/schema"
 	"github.com/raintank/tsdb-gw/auth"
 	"github.com/raintank/tsdb-gw/publish"
 	"github.com/raintank/tsdb-gw/util"

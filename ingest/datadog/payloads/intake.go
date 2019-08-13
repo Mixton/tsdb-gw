@@ -5,8 +5,8 @@ import (
 	"sort"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	schema "github.com/grafana/metrictank/schema"
+	log "github.com/sirupsen/logrus"
 )
 
 type PersistPayload struct {

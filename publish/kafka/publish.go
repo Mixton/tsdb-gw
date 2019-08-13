@@ -10,9 +10,9 @@ import (
 
 	"github.com/Shopify/sarama"
 	p "github.com/grafana/metrictank/cluster/partitioner"
-	"github.com/grafana/metrictank/stats"
 	"github.com/grafana/metrictank/schema"
 	"github.com/grafana/metrictank/schema/msg"
+	"github.com/grafana/metrictank/stats"
 	"github.com/raintank/tsdb-gw/publish/kafka/keycache"
 	"github.com/raintank/tsdb-gw/util"
 	log "github.com/sirupsen/logrus"

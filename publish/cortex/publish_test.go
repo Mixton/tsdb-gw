@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/prometheus/prometheus/prompb"
 	schema "github.com/grafana/metrictank/schema"
+	"github.com/prometheus/prometheus/prompb"
 )
 
 func Test_packageMetrics(t *testing.T) {
@@ -18,17 +18,17 @@ func Test_packageMetrics(t *testing.T) {
 		{
 			name: "basic metric",
 			metrics: []*schema.MetricData{
-				&schema.MetricData{Name: "example_metric"},
+				{Name: "example_metric"},
 			},
 			want: writeRequest{
 				Request: prompb.WriteRequest{
 					Timeseries: []*prompb.TimeSeries{
-						&prompb.TimeSeries{
+						{
 							Labels: []*prompb.Label{
-								&prompb.Label{Name: "__name__", Value: "example_metric"},
+								{Name: "__name__", Value: "example_metric"},
 							},
 							Samples: []prompb.Sample{
-								prompb.Sample{Value: 0, Timestamp: 0},
+								{Value: 0, Timestamp: 0},
 							},
 						},
 					},
@@ -39,17 +39,17 @@ func Test_packageMetrics(t *testing.T) {
 		{
 			name: "graphite metric",
 			metrics: []*schema.MetricData{
-				&schema.MetricData{Name: "example.metric"},
+				{Name: "example.metric"},
 			},
 			want: writeRequest{
 				Request: prompb.WriteRequest{
 					Timeseries: []*prompb.TimeSeries{
-						&prompb.TimeSeries{
+						{
 							Labels: []*prompb.Label{
-								&prompb.Label{Name: "__name__", Value: "example_metric"},
+								{Name: "__name__", Value: "example_metric"},
 							},
 							Samples: []prompb.Sample{
-								prompb.Sample{Value: 0, Timestamp: 0},
+								{Value: 0, Timestamp: 0},
 							},
 						},
 					},
@@ -60,7 +60,7 @@ func Test_packageMetrics(t *testing.T) {
 		{
 			name: "tagged metric",
 			metrics: []*schema.MetricData{
-				&schema.MetricData{
+				{
 					Name: "example_metric",
 					Tags: []string{"example=tag"},
 				},
@@ -68,13 +68,13 @@ func Test_packageMetrics(t *testing.T) {
 			want: writeRequest{
 				Request: prompb.WriteRequest{
 					Timeseries: []*prompb.TimeSeries{
-						&prompb.TimeSeries{
+						{
 							Labels: []*prompb.Label{
-								&prompb.Label{Name: "__name__", Value: "example_metric"},
-								&prompb.Label{Name: "example", Value: "tag"},
+								{Name: "__name__", Value: "example_metric"},
+								{Name: "example", Value: "tag"},
 							},
 							Samples: []prompb.Sample{
-								prompb.Sample{Value: 0, Timestamp: 0},
+								{Value: 0, Timestamp: 0},
 							},
 						},
 					},
@@ -85,7 +85,7 @@ func Test_packageMetrics(t *testing.T) {
 		{
 			name: "bad tagged metric",
 			metrics: []*schema.MetricData{
-				&schema.MetricData{
+				{
 					Name: "example_metric",
 					Tags: []string{"example="},
 				},
@@ -93,12 +93,12 @@ func Test_packageMetrics(t *testing.T) {
 			want: writeRequest{
 				Request: prompb.WriteRequest{
 					Timeseries: []*prompb.TimeSeries{
-						&prompb.TimeSeries{
+						{
 							Labels: []*prompb.Label{
-								&prompb.Label{Name: "__name__", Value: "example_metric"},
+								{Name: "__name__", Value: "example_metric"},
 							},
 							Samples: []prompb.Sample{
-								prompb.Sample{Value: 0, Timestamp: 0},
+								{Value: 0, Timestamp: 0},
 							},
 						},
 					},
@@ -109,7 +109,7 @@ func Test_packageMetrics(t *testing.T) {
 		{
 			name: "tagged metric",
 			metrics: []*schema.MetricData{
-				&schema.MetricData{
+				{
 					Name: "example_metric",
 					Tags: []string{"example1=tag", "example2=tag"},
 				},
@@ -117,14 +117,14 @@ func Test_packageMetrics(t *testing.T) {
 			want: writeRequest{
 				Request: prompb.WriteRequest{
 					Timeseries: []*prompb.TimeSeries{
-						&prompb.TimeSeries{
+						{
 							Labels: []*prompb.Label{
-								&prompb.Label{Name: "__name__", Value: "example_metric"},
-								&prompb.Label{Name: "example1", Value: "tag"},
-								&prompb.Label{Name: "example2", Value: "tag"},
+								{Name: "__name__", Value: "example_metric"},
+								{Name: "example1", Value: "tag"},
+								{Name: "example2", Value: "tag"},
 							},
 							Samples: []prompb.Sample{
-								prompb.Sample{Value: 0, Timestamp: 0},
+								{Value: 0, Timestamp: 0},
 							},
 						},
 					},

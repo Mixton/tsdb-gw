@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/golang/snappy"
-	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
 	schema "github.com/grafana/metrictank/schema"
 	"github.com/grafana/metrictank/schema/msg"
+	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
