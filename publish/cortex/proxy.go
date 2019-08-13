@@ -28,7 +28,7 @@ func newHTTPWriteProxy(writeURL string) (*httputil.ReverseProxy, error) {
 		return nil, fmt.Errorf("unable to parse cortex write url '%s': %v", writeURL, err)
 	}
 
-	// Seperate Proxy for Writes, add BufferPool for perf reasons if needed
+	// Separate Proxy for Writes, add BufferPool for perf reasons if needed
 	return &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
 			req.URL.Scheme = cortexURL.Scheme
