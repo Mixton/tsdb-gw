@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strconv"
+	"sync"
 
 	"github.com/golang/snappy"
 	"github.com/grafana/metrictank/stats"
@@ -19,9 +20,11 @@ import (
 )
 
 var (
-	metricsValid     = stats.NewCounterRate32("metrics.http.valid")    // valid metrics received (not necessarily published)
-	metricsRejected  = stats.NewCounterRate32("metrics.http.rejected") // invalid metrics received
-	metricsTimestamp = stats.NewRange32("metrics.timestamp.http")      // min/max timestamps seen in each interval
+	metricsValid    = stats.NewCounterRate32("metrics.http.valid")    // valid metrics received (not necessarily published)
+	metricsRejected = stats.NewCounterRate32("metrics.http.rejected") // invalid metrics received
+
+	metricsTSLock    = &sync.Mutex{}
+	metricsTimestamp = make(map[int]*stats.Range32)
 
 	discardedSamples = promauto.NewCounterVec(
 		prometheus.CounterOpts{
@@ -32,6 +35,17 @@ var (
 		[]string{"reason", "org"},
 	)
 )
+
+func getMetricsTimestampStat(org int) *stats.Range32 {
+	metricsTSLock.Lock()
+	metricTimestamp, ok := metricsTimestamp[org]
+	if !ok {
+		metricTimestamp = stats.NewRange32(fmt.Sprintf("metrics.timestamp.http.%d", org)) // min/max timestamps seen in each interval
+		metricsTimestamp[org] = metricTimestamp
+	}
+	metricsTSLock.Unlock()
+	return metricTimestamp
+}
 
 func Metrics(ctx *models.Context) {
 	contentType := ctx.Req.Header.Get("Content-Type")
@@ -63,6 +77,11 @@ func prepareIngest(ctx *models.Context, in []*schema.MetricData, toPublish []*sc
 	resp := NewMetricsResponse()
 	promDiscards := make(discardsByOrg)
 
+	var metricTimestamp *stats.Range32
+	if !ctx.IsAdmin {
+		metricTimestamp = getMetricsTimestampStat(ctx.ID)
+	}
+
 	for i, m := range in {
 		if !ctx.IsAdmin {
 			m.OrgId = ctx.ID
@@ -76,10 +95,12 @@ func prepareIngest(ctx *models.Context, in []*schema.MetricData, toPublish []*sc
 			promDiscards.Add(m.OrgId, err.Error())
 			continue
 		}
-		if !ctx.IsAdmin {
+		if ctx.IsAdmin {
+			metricTimestamp = getMetricsTimestampStat(m.OrgId)
+		} else {
 			m.SetId()
 		}
-		metricsTimestamp.ValueUint32(uint32(m.Time))
+		metricTimestamp.ValueUint32(uint32(m.Time))
 		toPublish = append(toPublish, m)
 	}
 
