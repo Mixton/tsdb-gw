@@ -61,12 +61,28 @@
   revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
 
 [[projects]]
+  digest = "1:0c31fa2fb2c809d61d640e28cc400087fe205df6ec9623dd1eb91a7de8d4f5d6"
+  name = "github.com/cespare/xxhash"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "3b82fb7d186719faeedd0c2864f868c74fbf79a1"
+  version = "v2.0.0"
+
+[[projects]]
   digest = "1:a2c1d0e43bd3baaa071d1b9ed72c27d78169b2b269f71c105ac4ba34b1be4a39"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   pruneopts = "NUT"
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
   version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3db74f0cf75d9759d2bdfb6cb55f7d7d372c01f847c5e1ab2fe03773dc2bf024"
+  name = "github.com/dgryski/go-jump"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "e1f439676b570800a863c37b78d1f868f51a85fc"
 
 [[projects]]
   branch = "master"
@@ -242,7 +258,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:98f85cb39a8a5f4dd7f3a79ccd2565108ca6ab487d08a947f07e0e9f5c0acc86"
+  digest = "1:64fe62d2ef964e52fc31c1879aced75dad7a2e68622de20cfa6f183fd5de33ce"
   name = "github.com/grafana/metrictank"
   packages = [
     "cluster/partitioner",
@@ -255,7 +271,7 @@
     "util",
   ]
   pruneopts = "NUT"
-  revision = "b18aa05f5a747eb8d38f8ed545d0540f9a3ee1bb"
+  revision = "b3e40ec058edaa1d1100780f52a3df9c1a917c3e"
 
 [[projects]]
   branch = "master"
@@ -484,14 +500,14 @@
   revision = "955e3a77c6a8294c013cb1bf45ed3965e5f19299"
 
 [[projects]]
-  digest = "1:cc84d76af9aec24dfda5b693fbc7fc2cb3d2cb2af2f22f5e51b1c98987f37441"
+  digest = "1:dec53b91f232decdae33a4500125ac5bc21964e3d10390c8ef52ef8bdc5abced"
   name = "github.com/raintank/schema"
   packages = [
     ".",
     "msg",
   ]
   pruneopts = "NUT"
-  revision = "49c3f30550ed40c22931bc7f46e5c3a7676236b4"
+  revision = "81ecd4b90851930216f37f1ce898cc4f7469d441"
 
 [[projects]]
   digest = "1:0d095d4b1220902aec6896e23808fbcdfa5192dab96d5a31a443a8c47eabc326"

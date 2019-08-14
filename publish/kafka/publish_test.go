@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Shopify/sarama"
 	"github.com/Shopify/sarama/mocks"
 	"github.com/grafana/metrictank/cluster/partitioner"
 	"github.com/raintank/schema"
@@ -42,8 +41,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: nil,
@@ -60,16 +58,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
@@ -85,16 +81,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 0,
 				},
@@ -110,16 +104,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 10,
 				},
@@ -135,16 +127,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 0,
 				},
@@ -160,16 +150,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 10,
 				},
@@ -185,16 +173,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 0,
 				},
@@ -210,16 +196,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
@@ -235,16 +219,14 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 10,
 				},
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 10,
 				},
@@ -260,8 +242,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
@@ -278,8 +259,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix1a-|prefix1b"},
@@ -296,8 +276,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix1"},
@@ -315,8 +294,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix1a", "prefix1b", "prefix1c"},
@@ -324,8 +302,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix2a", "prefix2b"},
@@ -343,8 +320,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{},
@@ -352,8 +328,7 @@ func Test_parseTopicSettings(t *testing.T) {
 				topicSettings{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix2a", "prefix2b"},
@@ -378,17 +353,27 @@ func Test_parseTopicSettings(t *testing.T) {
 				if topicSetting.onlyOrgId != test.expected[i].onlyOrgId {
 					t.Errorf("parseTopicSettings(): incorrect onlyOrgId %d, expects %d", topicSetting.onlyOrgId, test.expected[i].onlyOrgId)
 				}
-				if topicSetting.partitioner.PartitionBy != test.expected[i].partitioner.PartitionBy {
-					t.Errorf("parseTopicSettings(): incorrect partition scheme %s, expects %s", topicSetting.partitioner.PartitionBy, test.expected[i].partitioner.PartitionBy)
-				}
-				if topicSetting.partitioner.Partitioner == nil {
-					t.Errorf("parseTopicSettings(): nil partitioner")
+				if topicSetting.partitioner.Method != test.expected[i].partitioner.Method {
+					t.Errorf("parseTopicSettings(): incorrect partition scheme %s, expects %s", methodToString(topicSetting.partitioner.Method), methodToString(test.expected[i].partitioner.Method))
 				}
 				if !reflect.DeepEqual(topicSetting.discardPrefixes, test.expected[i].discardPrefixes) {
 					t.Errorf("parseTopicSettings(): incorrect discard prefixes %v, expects %v", topicSetting.discardPrefixes, test.expected[i].discardPrefixes)
 				}
 			}
 		})
+	}
+}
+
+func methodToString(m schema.PartitionByMethod) string {
+	switch m {
+	case schema.PartitionByOrg:
+		return "byOrg"
+	case schema.PartitionBySeries:
+		return "bySeries"
+	case schema.PartitionBySeriesWithTags:
+		return "bySeriesWithTags"
+	default:
+		return "error"
 	}
 }
 
@@ -471,10 +456,10 @@ func Test_Publish(t *testing.T) {
 			name: "single_topic_single_point",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic",
+					name:          "testTopic",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 				},
 			},
@@ -488,10 +473,10 @@ func Test_Publish(t *testing.T) {
 			name: "single_topic_many_points",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic",
+					name:          "testTopic",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 				},
 			},
@@ -505,10 +490,10 @@ func Test_Publish(t *testing.T) {
 			name: "single_topic_restricted_org_id",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic",
+					name:          "testTopic",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 10,
 				},
@@ -523,10 +508,10 @@ func Test_Publish(t *testing.T) {
 			name: "single_topic_discard_all_prefixes",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic",
+					name:          "testTopic",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					discardPrefixes: []string{"a.b.c"},
 				},
@@ -539,10 +524,10 @@ func Test_Publish(t *testing.T) {
 			name: "single_topic_discard_one_prefix",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic",
+					name:          "testTopic",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					discardPrefixes: []string{"a.b.c2"},
 				},
@@ -557,17 +542,17 @@ func Test_Publish(t *testing.T) {
 			name: "two_topics_single_point",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic1",
+					name:          "testTopic1",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 				},
 				topicSettings{
-					name: "testTopic2",
+					name:          "testTopic2",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 				},
 			},
@@ -582,17 +567,17 @@ func Test_Publish(t *testing.T) {
 			name: "two_topics_many_points",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic1",
+					name:          "testTopic1",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 				},
 				topicSettings{
-					name: "testTopic2",
+					name:          "testTopic2",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 				},
 			},
@@ -607,17 +592,17 @@ func Test_Publish(t *testing.T) {
 			name: "two_topics_many_points_discard_prefix_one_topic",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic1",
+					name:          "testTopic1",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 				},
 				topicSettings{
-					name: "testTopic2",
+					name:          "testTopic2",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					discardPrefixes: []string{"a.b.c2"},
 				},
@@ -633,18 +618,18 @@ func Test_Publish(t *testing.T) {
 			name: "two_topics_many_points_restricted_org_id",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic1",
+					name:          "testTopic1",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
 				},
 				topicSettings{
-					name: "testTopic10",
+					name:          "testTopic10",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 10,
 				},
@@ -660,18 +645,18 @@ func Test_Publish(t *testing.T) {
 			name: "two_topics_many_points_restricted_org_id_with_0",
 			topics: []topicSettings{
 				topicSettings{
-					name: "testTopic1",
+					name:          "testTopic1",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "bySeries",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0, // 0 means no restriction on orgid
 				},
 				topicSettings{
-					name: "testTopic10",
+					name:          "testTopic10",
+					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
-						PartitionBy: "byOrg",
-						Partitioner: sarama.NewHashPartitioner(""),
+						Method: schema.PartitionByOrg,
 					},
 					onlyOrgId: 10,
 				},
