@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/grafana/metrictank/conf"
-	"github.com/raintank/schema"
+	"github.com/grafana/metrictank/schema"
 )
 
 var err3Fields = errors.New("need 3 fields")

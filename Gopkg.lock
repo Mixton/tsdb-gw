@@ -258,7 +258,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:64fe62d2ef964e52fc31c1879aced75dad7a2e68622de20cfa6f183fd5de33ce"
+  digest = "1:709d0d670f4588efb0a9ba483ad31cb7e46b3bd65594109e3911377c7525f281"
   name = "github.com/grafana/metrictank"
   packages = [
     "cluster/partitioner",
@@ -267,11 +267,13 @@
     "mdata/chunk/tsz",
     "mdata/chunk/tsz/testdata",
     "mdata/errors",
+    "schema",
+    "schema/msg",
     "stats",
     "util",
   ]
   pruneopts = "NUT"
-  revision = "b3e40ec058edaa1d1100780f52a3df9c1a917c3e"
+  revision = "da447e66475ce3228dafa05ed7f674a9b46c31c5"
 
 [[projects]]
   branch = "master"
@@ -498,16 +500,6 @@
   packages = ["."]
   pruneopts = "NUT"
   revision = "955e3a77c6a8294c013cb1bf45ed3965e5f19299"
-
-[[projects]]
-  digest = "1:dec53b91f232decdae33a4500125ac5bc21964e3d10390c8ef52ef8bdc5abced"
-  name = "github.com/raintank/schema"
-  packages = [
-    ".",
-    "msg",
-  ]
-  pruneopts = "NUT"
-  revision = "81ecd4b90851930216f37f1ce898cc4f7469d441"
 
 [[projects]]
   digest = "1:0d095d4b1220902aec6896e23808fbcdfa5192dab96d5a31a443a8c47eabc326"
@@ -858,6 +850,8 @@
     "github.com/grafana/globalconf",
     "github.com/grafana/metrictank/cluster/partitioner",
     "github.com/grafana/metrictank/conf",
+    "github.com/grafana/metrictank/schema",
+    "github.com/grafana/metrictank/schema/msg",
     "github.com/grafana/metrictank/stats",
     "github.com/graphite-ng/carbon-relay-ng/input",
     "github.com/jarcoal/httpmock",
@@ -872,8 +866,6 @@
     "github.com/prometheus/common/model",
     "github.com/prometheus/prometheus/prompb",
     "github.com/raintank/dur",
-    "github.com/raintank/schema",
-    "github.com/raintank/schema/msg",
     "github.com/sirupsen/logrus",
     "github.com/smartystreets/goconvey/convey",
     "github.com/uber/jaeger-client-go",

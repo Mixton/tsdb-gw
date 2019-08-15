@@ -9,7 +9,7 @@ import (
 
 	"github.com/Shopify/sarama/mocks"
 	"github.com/grafana/metrictank/cluster/partitioner"
-	"github.com/raintank/schema"
+	"github.com/grafana/metrictank/schema"
 	"github.com/raintank/tsdb-gw/publish/kafka/keycache"
 	"github.com/raintank/tsdb-gw/util"
 )

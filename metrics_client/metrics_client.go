@@ -13,8 +13,8 @@ import (
 	"github.com/golang/snappy"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	schema "github.com/raintank/schema"
-	"github.com/raintank/schema/msg"
+	schema "github.com/grafana/metrictank/schema"
+	"github.com/grafana/metrictank/schema/msg"
 )
 
 var (
