@@ -8,7 +8,7 @@ import (
 	"github.com/raintank/tsdb-gw/ingest"
 	"github.com/raintank/tsdb-gw/publish"
 	log "github.com/sirupsen/logrus"
-	schema "github.com/raintank/schema"
+	schema "github.com/grafana/metrictank/schema"
 )
 
 // DataDogSeriesPayload struct to unmarshal datadog agent json
