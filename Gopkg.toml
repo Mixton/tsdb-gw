@@ -89,7 +89,7 @@ ignored = [
 
 [[constraint]]
   name = "github.com/raintank/schema"
-  revision = "49c3f30550ed40c22931bc7f46e5c3a7676236b4"
+  revision = "81ecd4b90851930216f37f1ce898cc4f7469d441"
 
 [[override]]
   name = "github.com/sercand/kuberesolver"

@@ -53,6 +53,7 @@ var (
 type topicSettings struct {
 	name            string
 	partitioner     *p.Kafka
+	numPartitions   int32
 	onlyOrgId       int
 	discardPrefixes []string
 }
@@ -73,7 +74,7 @@ func init() {
 	flag.StringVar(&discardPrefixesStr, "discard-prefixes", "", "discard data points starting with one of the given prefixes separated by | (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
 	flag.BoolVar(&enabled, "metrics-publish", false, "enable metric publishing")
-	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries) (may be given multiple times, once per topic, as a comma-separated list)")
+	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for partitioning metrics. (byOrg|bySeries|bySeriesWithTags) (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.DurationVar(&flushFreq, "metrics-flush-freq", time.Millisecond*50, "The best-effort frequency of flushes to kafka")
 	flag.IntVar(&maxMessages, "metrics-max-messages", 5000, "The maximum number of messages the producer will send in a single request")
 	flag.StringVar(&schemasConf, "schemas-file", "/etc/gw/storage-schemas.conf", "path to carbon storage-schemas.conf file")
@@ -194,6 +195,7 @@ func New(broker string, autoInterval bool) *mtPublisher {
 	config.Producer.Return.Successes = true
 	config.Producer.Flush.Frequency = flushFreq
 	config.Producer.Flush.MaxMessages = maxMessages
+	config.Producer.Partitioner = sarama.NewManualPartitioner
 	config.Version = kafkaVersion
 	err = config.Validate()
 	if err != nil {
@@ -202,7 +204,23 @@ func New(broker string, autoInterval bool) *mtPublisher {
 
 	brokers = []string{broker}
 
-	producer, err = sarama.NewSyncProducer(brokers, config)
+	client, err := sarama.NewClient(brokers, config)
+	if err != nil {
+		log.Fatalf("failed to initialize kafka client %s", err)
+	}
+
+	for i, setting := range mp.topics {
+		partitions, err := client.Partitions(setting.name)
+		if err != nil {
+			log.Fatalf("failed to get number of partitions %s", err)
+		}
+		if len(partitions) < 1 {
+			log.Fatalf("failed to get number of partitions for topic %s", setting.name)
+		}
+		mp.topics[i].numPartitions = int32(len(partitions))
+	}
+
+	producer, err = sarama.NewSyncProducerFromClient(client)
 	if err != nil {
 		log.Fatalf("failed to initialize kafka producer. %s", err)
 	}
@@ -302,7 +320,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 		buffersToRelease = append(buffersToRelease, data)
 
 		for _, topic := range m.topics {
-			key, err := topic.partitioner.GetPartitionKey(metric, nil)
+			partition, err := topic.partitioner.Partition(metric, topic.numPartitions)
 			if err != nil {
 				return err
 			}
@@ -318,9 +336,9 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			if (topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId) &&
 				!prefixDiscarded {
 				message := &sarama.ProducerMessage{
-					Key:   sarama.ByteEncoder(key),
-					Topic: topic.name,
-					Value: sarama.ByteEncoder(data),
+					Partition: partition,
+					Topic:     topic.name,
+					Value:     sarama.ByteEncoder(data),
 				}
 				payload = append(payload, message)
 				if isMP {
