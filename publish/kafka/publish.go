@@ -74,7 +74,7 @@ func init() {
 	flag.StringVar(&discardPrefixesStr, "discard-prefixes", "", "discard data points starting with one of the given prefixes separated by | (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
 	flag.BoolVar(&enabled, "metrics-publish", false, "enable metric publishing")
-	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for paritioning metrics. (byOrg|bySeries|bySeriesWithTags) (may be given multiple times, once per topic, as a comma-separated list)")
+	flag.StringVar(&partitionSchemesStr, "metrics-partition-scheme", "bySeries", "method used for partitioning metrics. (byOrg|bySeries|bySeriesWithTags) (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.DurationVar(&flushFreq, "metrics-flush-freq", time.Millisecond*50, "The best-effort frequency of flushes to kafka")
 	flag.IntVar(&maxMessages, "metrics-max-messages", 5000, "The maximum number of messages the producer will send in a single request")
 	flag.StringVar(&schemasConf, "schemas-file", "/etc/gw/storage-schemas.conf", "path to carbon storage-schemas.conf file")
