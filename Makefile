@@ -1,7 +1,7 @@
 default:
 	$(MAKE) all
 test:
-	go test ./...
+	go test -race ./...
 check:
 	$(MAKE) test
 deps:
