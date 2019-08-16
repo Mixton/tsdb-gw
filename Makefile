@@ -4,8 +4,6 @@ test:
 	go test -race ./...
 check:
 	$(MAKE) test
-deps:
-	./scripts/depends.sh
 all:
 	./scripts/build.sh
 
