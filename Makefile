@@ -1,13 +1,13 @@
 default:
 	$(MAKE) all
 test:
-	bash -c "go test ./..."
+	go test ./...
 check:
 	$(MAKE) test
 deps:
-	bash -c "./scripts/depends.sh"
+	./scripts/depends.sh
 all:
-	bash -c "./scripts/build.sh"
+	./scripts/build.sh
 
 qa: build qa-common
 
