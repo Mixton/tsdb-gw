@@ -16,10 +16,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/snappy"
+	schema "github.com/grafana/metrictank/schema"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/prometheus/prompb"
-	schema "github.com/grafana/metrictank/schema"
 	"github.com/raintank/tsdb-gw/publish"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context/ctxhttp"
@@ -29,7 +29,6 @@ var (
 	writeBPoolSize  = flag.Int("bpool-size", 100, "max number of byte buffers in the cortex write buffer pool")
 	writeBPoolWidth = flag.Int("bpool-width", 1024, "capacity of byte array provided by cortex write buffer pool")
 
-	errBadTag    = errors.New("unable to parse tags")
 	errNoMetrics = errors.New("no metrics provided in write request")
 
 	droppedSamplesTotal = promauto.NewCounterVec(

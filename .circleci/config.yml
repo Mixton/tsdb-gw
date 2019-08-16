@@ -18,8 +18,21 @@ jobs:
       - image: circleci/golang:1.12.3
     steps:
       - checkout
-      - run: scripts/tests.sh
-      - run: scripts/vendor_health.sh
+      - run: go test -v -race ./...
+
+  qa:
+    working_directory: /go/src/github.com/raintank/tsdb-gw
+    docker:
+      - image: circleci/golang:1.12.3
+    steps:
+      - checkout
+      - run: scripts/qa/gofmt.sh
+      - run: scripts/qa/ineffassign.sh
+      - run: scripts/qa/misspell.sh
+      - run: scripts/qa/gitignore.sh
+      - run: scripts/qa/unused.sh
+      - run: scripts/qa/vendor.sh
+      - run: scripts/qa/vet-high-confidence.sh
 
   deploy:
     docker:
@@ -48,7 +61,9 @@ workflows:
     jobs:
       - build
       - test
+      - qa
       - deploy:
           requires:
             - build
             - test
+            - qa

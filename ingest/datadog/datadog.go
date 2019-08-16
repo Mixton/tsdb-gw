@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
+	schema "github.com/grafana/metrictank/schema"
 	"github.com/raintank/tsdb-gw/api/models"
 	"github.com/raintank/tsdb-gw/ingest"
 	"github.com/raintank/tsdb-gw/publish"
 	log "github.com/sirupsen/logrus"
-	schema "github.com/grafana/metrictank/schema"
 )
 
 // DataDogSeriesPayload struct to unmarshal datadog agent json

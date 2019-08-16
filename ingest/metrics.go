@@ -9,11 +9,11 @@ import (
 	"sync"
 
 	"github.com/golang/snappy"
+	"github.com/grafana/metrictank/schema"
+	"github.com/grafana/metrictank/schema/msg"
 	"github.com/grafana/metrictank/stats"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/grafana/metrictank/schema"
-	"github.com/grafana/metrictank/schema/msg"
 	"github.com/raintank/tsdb-gw/api/models"
 	"github.com/raintank/tsdb-gw/publish"
 	log "github.com/sirupsen/logrus"

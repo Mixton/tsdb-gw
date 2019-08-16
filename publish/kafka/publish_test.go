@@ -38,7 +38,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			partitionSchemesStr: "bySeries",
 			topicsStr:           "testTopic",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -55,14 +55,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -78,14 +78,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionByOrg,
@@ -101,14 +101,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "1,10",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionByOrg,
@@ -124,14 +124,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionByOrg,
@@ -147,14 +147,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "1,10,42",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionByOrg,
@@ -170,14 +170,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,  testTopic2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionByOrg,
@@ -193,14 +193,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 0,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -216,14 +216,14 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic1,testTopic2",
 			onlyOrgIdsStr:       "10",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 10,
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -239,7 +239,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -256,7 +256,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			discardPrefixesStr:  "prefix1a-|prefix1b,prefix2",
 			onlyOrgIdsStr:       "",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -273,7 +273,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "testTopic",
 			discardPrefixesStr:  "prefix1",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -291,7 +291,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			onlyOrgIdsStr:       "",
 			discardPrefixesStr:  "prefix1a|prefix1b|prefix1c,prefix2a|prefix2b",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -299,7 +299,7 @@ func Test_parseTopicSettings(t *testing.T) {
 					onlyOrgId:       0,
 					discardPrefixes: []string{"prefix1a", "prefix1b", "prefix1c"},
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -317,7 +317,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			onlyOrgIdsStr:       "",
 			discardPrefixesStr:  ",prefix2a|prefix2b",
 			expected: []topicSettings{
-				topicSettings{
+				{
 					name: "testTopic1",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -325,7 +325,7 @@ func Test_parseTopicSettings(t *testing.T) {
 					onlyOrgId:       0,
 					discardPrefixes: []string{},
 				},
-				topicSettings{
+				{
 					name: "testTopic2",
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
@@ -455,7 +455,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "single_topic_single_point",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -472,7 +472,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "single_topic_many_points",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -489,7 +489,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "single_topic_restricted_org_id",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -507,7 +507,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "single_topic_discard_all_prefixes",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -523,7 +523,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "single_topic_discard_one_prefix",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -541,14 +541,14 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "two_topics_single_point",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic1",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 				},
-				topicSettings{
+				{
 					name:          "testTopic2",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -566,14 +566,14 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "two_topics_many_points",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic1",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 				},
-				topicSettings{
+				{
 					name:          "testTopic2",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -591,14 +591,14 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "two_topics_many_points_discard_prefix_one_topic",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic1",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
 					},
 				},
-				topicSettings{
+				{
 					name:          "testTopic2",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -617,7 +617,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "two_topics_many_points_restricted_org_id",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic1",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -625,7 +625,7 @@ func Test_Publish(t *testing.T) {
 					},
 					onlyOrgId: 1,
 				},
-				topicSettings{
+				{
 					name:          "testTopic10",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -644,7 +644,7 @@ func Test_Publish(t *testing.T) {
 		{
 			name: "two_topics_many_points_restricted_org_id_with_0",
 			topics: []topicSettings{
-				topicSettings{
+				{
 					name:          "testTopic1",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
@@ -652,7 +652,7 @@ func Test_Publish(t *testing.T) {
 					},
 					onlyOrgId: 0, // 0 means no restriction on orgid
 				},
-				topicSettings{
+				{
 					name:          "testTopic10",
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{

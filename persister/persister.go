@@ -11,11 +11,11 @@ import (
 	"sync"
 	"time"
 
+	schema "github.com/grafana/metrictank/schema"
 	"github.com/raintank/tsdb-gw/ingest/datadog/payloads"
 	"github.com/raintank/tsdb-gw/metrics_client"
 	"github.com/raintank/tsdb-gw/persister/storage"
 	log "github.com/sirupsen/logrus"
-	schema "github.com/grafana/metrictank/schema"
 )
 
 // Persister ingests payloads that are serialized into metrics and repeatedly
@@ -32,7 +32,6 @@ type Persister struct {
 // Config contains the configuration require to
 // create a Persister
 type Config struct {
-	prefix              string
 	interval            int
 	maxBufferSize       int
 	MetricsClientConfig metrics_client.Config
@@ -100,6 +99,12 @@ func (p *Persister) PersistHandler(w http.ResponseWriter, r *http.Request) {
 
 		var payload payloads.PersistPayload
 		err = json.Unmarshal(data, &payload)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(fmt.Sprintf("unable to unmarshal request, reason: %v", err)))
+			return
+		}
+
 		rowKey := strconv.Itoa(payload.OrgID) + ":" + payload.Hostname
 
 		err = p.store.Store(rowKey, payload)
@@ -152,6 +157,11 @@ func (p *Persister) RemoveRowsHandler(w http.ResponseWriter, r *http.Request) {
 
 		removeRequest := RemoveRowsRequest{}
 		err = json.Unmarshal(body, &removeRequest)
+		if err != nil {
+			log.Errorf("unable to unmarshal request. %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 		err = p.store.Remove(removeRequest.RowKeys)
 		if err != nil {
