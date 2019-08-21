@@ -724,6 +724,14 @@
   version = "v0.3.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:9fdc2b55e8e0fafe4b41884091e51e77344f7dc511c5acedcfd98200003bff90"
+  name = "golang.org/x/time"
+  packages = ["rate"]
+  pruneopts = "NUT"
+  revision = "9d24e82272b4f38b78bc8cff74fa936d31ccd8ef"
+
+[[projects]]
   digest = "1:286d3ed3b6c0d900ebef984bfab1b50b08f82a2f13ad9bb51e9be299f7f75200"
   name = "google.golang.org/api"
   packages = [
@@ -876,6 +884,7 @@
     "golang.org/x/net/context/ctxhttp",
     "golang.org/x/net/http/httpguts",
     "golang.org/x/sync/singleflight",
+    "golang.org/x/time/rate",
     "gopkg.in/ini.v1",
     "gopkg.in/macaron.v1",
   ]
