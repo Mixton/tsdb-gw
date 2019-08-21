@@ -1,11 +1,13 @@
 package ingest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/golang/snappy"
@@ -17,6 +19,7 @@ import (
 	"github.com/raintank/tsdb-gw/api/models"
 	"github.com/raintank/tsdb-gw/publish"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/time/rate"
 )
 
 var (
@@ -34,7 +37,53 @@ var (
 		},
 		[]string{"reason", "org"},
 	)
+
+	rateLimiters map[int]*rate.Limiter // org id -> rate limiter
 )
+
+func ConfigureRateLimits(limitStr string) error {
+	if len(limitStr) == 0 {
+		return nil
+	}
+
+	rateLimiters = make(map[int]*rate.Limiter)
+
+	limitsWithOrgs := strings.Split(limitStr, ";")
+	for _, limitWithOrg := range limitsWithOrgs {
+		limitWithOrgParts := strings.SplitN(limitWithOrg, ":", 2)
+		if len(limitWithOrgParts) != 2 {
+			return fmt.Errorf("Invalid limit configuration string: %q", limitWithOrg)
+		}
+
+		orgId, err := strconv.ParseInt(limitWithOrgParts[0], 10, 32)
+		if err != nil {
+			return fmt.Errorf("Unable to parse orgId from string: %q", limitWithOrgParts[0])
+		}
+
+		limit, err := strconv.ParseInt(limitWithOrgParts[1], 10, 32)
+		if err != nil {
+			return fmt.Errorf("Unable to parse rate limit from string: %q", limitWithOrgParts[1])
+		}
+
+		rateLimiters[int(orgId)] = rate.NewLimiter(rate.Limit(limit), int(limit))
+	}
+
+	return nil
+}
+
+func rateLimit(ctx context.Context, orgId, datapoints int) {
+	limiter, ok := rateLimiters[orgId]
+	if !ok {
+		return
+	}
+
+	// if the number of datapoints is larger than the secondly budget this will return an error
+	// which we then ignore
+	// TODO:
+	// figure out what to do if one single request contains more datapoints than the secondly budget,
+	// currently this request would not be limited
+	limiter.WaitN(ctx, datapoints)
+}
 
 func getMetricsTimestampStat(org int) *stats.Range32 {
 	metricsTSLock.Lock()
@@ -142,6 +191,10 @@ func metricsJson(ctx *models.Context) {
 	toPublish := make([]*schema.MetricData, 0, len(metrics))
 	toPublish, resp := prepareIngest(ctx, metrics, toPublish)
 
+	if len(rateLimiters) > 0 {
+		rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+	}
+
 	select {
 	case <-ctx.Req.Context().Done():
 		ctx.Error(499, "request canceled")
@@ -202,6 +255,10 @@ func metricsBinary(ctx *models.Context, compressed bool) {
 
 	toPublish := make([]*schema.MetricData, 0, len(metricData.Metrics))
 	toPublish, resp := prepareIngest(ctx, metricData.Metrics, toPublish)
+
+	if len(rateLimiters) > 0 {
+		rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+	}
 
 	select {
 	case <-ctx.Req.Context().Done():
