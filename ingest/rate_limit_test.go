@@ -164,12 +164,12 @@ func TestLimitingRate(t *testing.T) {
 				}(datapoints)
 			}
 
-			if ingestedDatapoints < tt.expectedIngestedDatapointsMin || ingestedDatapoints > tt.expectedIngestedDatapointsMax {
-				t.Fatalf("ingested datapoints is outside expected range. Expected %d - %d, Got %d", tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, ingestedDatapoints)
+			if atomic.LoadUint32(&ingestedDatapoints) < tt.expectedIngestedDatapointsMin || atomic.LoadUint32(&ingestedDatapoints) > tt.expectedIngestedDatapointsMax {
+				t.Fatalf("ingested datapoints is outside expected range. Expected %d - %d, Got %d", tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, atomic.LoadUint32(&ingestedDatapoints))
 			}
 
-			if rejectedRequests < tt.expectedRejectedRequestsMin || rejectedRequests > tt.expectedRejectedRequestsMax {
-				t.Fatalf("rejected requests is outside expected range. Expected %d - %d, Got %d", tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, rejectedRequests)
+			if atomic.LoadUint32(&rejectedRequests) < tt.expectedRejectedRequestsMin || atomic.LoadUint32(&rejectedRequests) > tt.expectedRejectedRequestsMax {
+				t.Fatalf("rejected requests is outside expected range. Expected %d - %d, Got %d", tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
 			}
 		})
 	}
