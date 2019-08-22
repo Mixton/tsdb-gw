@@ -54,7 +54,7 @@ var (
 
 	// limitations
 	timerangeLimit = flag.String("timerange-limit", "", "define maximum timerange to serve queries for")
-	rateLimits     = flag.String("rate-limits", "", "define rate limits in the format \"<orgId>:<limit>;<orgId>:<limit>\"")
+	rateLimits     = flag.String("rate-limits", "", "define rate limits in the format \"<orgId>:<limit>;<orgId>:<limit>\" where <limit> is the number of datapoints per second")
 
 	metricsAddr = flag.String("metrics-addr", ":8001", "http service address for the /metrics endpoint")
 )
