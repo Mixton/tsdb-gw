@@ -2,6 +2,7 @@ package ingest
 
 import (
 	"context"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -87,10 +88,10 @@ func TestLimitingRate(t *testing.T) {
 			// - we're receiving 100 requests per second, with 100 datapoints per request, we permit 1000 datapoints per second, we're testing for 10 seconds
 			// - roughly 10000 datapoints should get ingested in total
 			// - in total 1000 requests should be made, out of which around 100 (10000/100) should get accepted, around 900 should get rejected
-			expectedIngestedDatapointsMin: 9000,
-			expectedIngestedDatapointsMax: 11000,
-			expectedRejectedRequestsMin:   800,
-			expectedRejectedRequestsMax:   1000,
+			expectedIngestedDatapointsMin: 7500,
+			expectedIngestedDatapointsMax: 12500,
+			expectedRejectedRequestsMin:   875,
+			expectedRejectedRequestsMax:   925,
 		}, {
 			name:                 "100 datapoints/sec, 10 reqs/sec, 50 datapoints/req",
 			limitStr:             "1:100",
@@ -103,8 +104,8 @@ func TestLimitingRate(t *testing.T) {
 			// - we're receiving 10 requests per second, with 50 datapoints per request, we permit 100 datapoints per second, we're testing for 10 seconds
 			// - roughly 1000 datapoints should get ingested in total
 			// - in total 100 requests should be made, out of which around 20 (1000/50) should get accepted, around 80 should get rejected
-			expectedIngestedDatapointsMin: 900,
-			expectedIngestedDatapointsMax: 1100,
+			expectedIngestedDatapointsMin: 500,
+			expectedIngestedDatapointsMax: 1500,
 			expectedRejectedRequestsMin:   70,
 			expectedRejectedRequestsMax:   90,
 		}, {
@@ -119,15 +120,18 @@ func TestLimitingRate(t *testing.T) {
 			// - we're receiving 7 requests per second, with 123 datapoints per request, we permit 333 datapoints per second, we're testing for 10 seconds
 			// - roughly 3333 datapoints should get ingested in total
 			// - in total 70 requests should be made, out of which around 27 (3333/123) should get accepted, around 43 should get rejected
-			expectedIngestedDatapointsMin: 3300,
-			expectedIngestedDatapointsMax: 3600,
+			expectedIngestedDatapointsMin: 2460,
+			expectedIngestedDatapointsMax: 4305,
 			expectedRejectedRequestsMin:   35,
 			expectedRejectedRequestsMax:   50,
 		},
 	}
-
+	var mu sync.Mutex
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// rateLimits are global, so we can only run 1 test at a time.
+			mu.Lock()
+			defer mu.Unlock()
 			if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
 				t.Errorf("ConfigureRateLimits() error = %v, wantErr %v", err, tt.wantErr)
 			}
