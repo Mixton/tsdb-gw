@@ -100,11 +100,11 @@ func RequireViewer() macaron.Handler {
 	}
 }
 
-func rateLimiter() macaron.Handler {
+func IngestRateLimiter() macaron.Handler {
 	return func(ctx *models.Context) {
 		if !ingest.IsRateBudgetAvailable(ctx.Req.Context(), ctx.ID) {
 			log.Infof("Rejecting request for %d due to rate limit", ctx.ID)
-			ctx.JSON(429, "Rate limit is exhausted")
+			ctx.JSON(http.StatusTooManyRequests, "Rate limit is exhausted")
 			return
 		}
 	}
@@ -129,7 +129,7 @@ func (a *Api) GenerateHandlers(kind string, enforceRoles, datadog bool, handlers
 	}
 
 	if ingest.UseRateLimit() {
-		combinedHandlers = append(combinedHandlers, rateLimiter())
+		combinedHandlers = append(combinedHandlers, IngestRateLimiter())
 	}
 
 	return append(combinedHandlers, handlers...)
