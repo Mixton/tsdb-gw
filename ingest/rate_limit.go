@@ -2,6 +2,7 @@ package ingest
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -11,6 +12,8 @@ import (
 
 var (
 	rateLimiters map[int]*rate.Limiter // org id -> rate limiter
+
+	ErrRequestExceedsBurst = errors.New("request exceeds limit burst size")
 )
 
 func ConfigureRateLimits(limitStr string) error {
@@ -43,14 +46,19 @@ func ConfigureRateLimits(limitStr string) error {
 	return nil
 }
 
-func rateLimit(ctx context.Context, orgId, datapoints int) {
+func rateLimit(ctx context.Context, orgId, datapoints int) error {
 	limiter, ok := rateLimiters[orgId]
 	if !ok {
-		return
+		return nil
 	}
 
+	// if the number of points trying to be added is greater then the limiter
+	// burst size, just return an error.
+	if datapoints > limiter.Burst() {
+		return ErrRequestExceedsBurst
+	}
 	// wait until we are allowed to publish the given number of datapoints
-	limiter.WaitN(ctx, datapoints)
+	return limiter.WaitN(ctx, datapoints)
 }
 
 func IsRateBudgetAvailable(ctx context.Context, orgId int) bool {

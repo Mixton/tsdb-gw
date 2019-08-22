@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"strconv"
 	"sync"
 
@@ -143,7 +144,17 @@ func metricsJson(ctx *models.Context) {
 	toPublish, resp := prepareIngest(ctx, metrics, toPublish)
 
 	if UseRateLimit() {
-		rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		err = rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		if err != nil && ctx.Req.Context().Err() == nil {
+			if err == ErrRequestExceedsBurst {
+				ctx.JSON(http.StatusRequestEntityTooLarge, "batch is larger than limit")
+				return
+			}
+
+			// this should only happen if ctx.Req.Context() has a deadline.
+			ctx.JSON(http.StatusTooManyRequests, "rate limit is exhausted")
+			return
+		}
 	}
 
 	select {
@@ -208,7 +219,17 @@ func metricsBinary(ctx *models.Context, compressed bool) {
 	toPublish, resp := prepareIngest(ctx, metricData.Metrics, toPublish)
 
 	if UseRateLimit() {
-		rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		err = rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		if err != nil && ctx.Req.Context().Err() == nil {
+			if err == ErrRequestExceedsBurst {
+				ctx.JSON(http.StatusRequestEntityTooLarge, "batch is larger than limit")
+				return
+			}
+
+			// this should only happen if ctx.Req.Context() has a deadline.
+			ctx.JSON(http.StatusTooManyRequests, "rate limit is exhausted")
+			return
+		}
 	}
 
 	select {
