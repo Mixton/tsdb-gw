@@ -44,20 +44,18 @@ func TestConfigureRateLimits(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
-				t.Errorf("ConfigureRateLimits() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			for orgId, expectedLimit := range tt.expectedLimiters {
-				if limiter, ok := rateLimiters[orgId]; !ok {
-					t.Fatalf("Expected limit for org %d, but there was none", orgId)
-				} else {
-					if limiter.Limit() != rate.Limit(expectedLimit) {
-						t.Fatalf("Expected org %d to have limit %d, but it had %d", orgId, expectedLimit, int(limiter.Limit()))
-					}
+		if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
+			t.Errorf("%s: ConfigureRateLimits() error = %v, wantErr %v", tt.name, err, tt.wantErr)
+		}
+		for orgId, expectedLimit := range tt.expectedLimiters {
+			if limiter, ok := rateLimiters[orgId]; !ok {
+				t.Fatalf("%s: Expected limit for org %d, but there was none", tt.name, orgId)
+			} else {
+				if limiter.Limit() != rate.Limit(expectedLimit) {
+					t.Fatalf("%s: Expected org %d to have limit %d, but it had %d", tt.name, orgId, expectedLimit, int(limiter.Limit()))
 				}
 			}
-		})
+		}
 	}
 }
 
