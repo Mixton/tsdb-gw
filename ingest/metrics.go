@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"strconv"
 	"sync"
 
@@ -142,6 +143,20 @@ func metricsJson(ctx *models.Context) {
 	toPublish := make([]*schema.MetricData, 0, len(metrics))
 	toPublish, resp := prepareIngest(ctx, metrics, toPublish)
 
+	if UseRateLimit() {
+		err = rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		if err != nil && ctx.Req.Context().Err() == nil {
+			if err == ErrRequestExceedsBurst {
+				ctx.JSON(http.StatusRequestEntityTooLarge, "batch is larger than limit")
+				return
+			}
+
+			// this should only happen if ctx.Req.Context() has a deadline.
+			ctx.JSON(http.StatusTooManyRequests, "rate limit is exhausted")
+			return
+		}
+	}
+
 	select {
 	case <-ctx.Req.Context().Done():
 		ctx.Error(499, "request canceled")
@@ -202,6 +217,20 @@ func metricsBinary(ctx *models.Context, compressed bool) {
 
 	toPublish := make([]*schema.MetricData, 0, len(metricData.Metrics))
 	toPublish, resp := prepareIngest(ctx, metricData.Metrics, toPublish)
+
+	if UseRateLimit() {
+		err = rateLimit(ctx.Req.Context(), ctx.ID, len(toPublish))
+		if err != nil && ctx.Req.Context().Err() == nil {
+			if err == ErrRequestExceedsBurst {
+				ctx.JSON(http.StatusRequestEntityTooLarge, "batch is larger than limit")
+				return
+			}
+
+			// this should only happen if ctx.Req.Context() has a deadline.
+			ctx.JSON(http.StatusTooManyRequests, "rate limit is exhausted")
+			return
+		}
+	}
 
 	select {
 	case <-ctx.Req.Context().Done():

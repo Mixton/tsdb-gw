@@ -21,6 +21,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/raintank/tsdb-gw/api/models"
 	"github.com/raintank/tsdb-gw/auth"
+	"github.com/raintank/tsdb-gw/ingest"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/macaron.v1"
 )
@@ -99,7 +100,17 @@ func RequireViewer() macaron.Handler {
 	}
 }
 
-func (a *Api) GenerateHandlers(kind string, enforceRoles bool, datadog bool, handlers ...macaron.Handler) []macaron.Handler {
+func IngestRateLimiter() macaron.Handler {
+	return func(ctx *models.Context) {
+		if !ingest.IsRateBudgetAvailable(ctx.Req.Context(), ctx.ID) {
+			log.Infof("Rejecting request for %d due to rate limit", ctx.ID)
+			ctx.JSON(http.StatusTooManyRequests, "Rate limit is exhausted")
+			return
+		}
+	}
+}
+
+func (a *Api) GenerateHandlers(kind string, enforceRoles, datadog bool, handlers ...macaron.Handler) []macaron.Handler {
 	combinedHandlers := []macaron.Handler{}
 	if kind == "write" {
 		if datadog {
@@ -116,6 +127,11 @@ func (a *Api) GenerateHandlers(kind string, enforceRoles bool, datadog bool, han
 			combinedHandlers = append(combinedHandlers, RequirePublisher())
 		}
 	}
+
+	if ingest.UseRateLimit() {
+		combinedHandlers = append(combinedHandlers, IngestRateLimiter())
+	}
+
 	return append(combinedHandlers, handlers...)
 }
 
