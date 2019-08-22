@@ -126,55 +126,55 @@ func TestLimitingRate(t *testing.T) {
 			expectedRejectedRequestsMax:   50,
 		},
 	}
-	var mu sync.Mutex
+
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// rateLimits are global, so we can only run 1 test at a time.
-			mu.Lock()
-			defer mu.Unlock()
-			if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
-				t.Errorf("ConfigureRateLimits() error = %v, wantErr %v", err, tt.wantErr)
-			}
+		if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
+			t.Errorf("%s: ConfigureRateLimits() error = %v, wantErr %v", tt.name, err, tt.wantErr)
+		}
 
-			done := time.NewTimer(time.Duration(tt.testTime) * time.Second)
-			requestCh := make(chan int, 1000)
+		done := time.NewTimer(time.Duration(tt.testTime) * time.Second)
+		requestCh := make(chan int, 1000)
 
-			go func() {
-				ticker := time.NewTicker(time.Second / time.Duration(tt.requestRate))
-				defer ticker.Stop()
-				defer close(requestCh)
+		go func() {
+			ticker := time.NewTicker(time.Second / time.Duration(tt.requestRate))
+			defer ticker.Stop()
+			defer close(requestCh)
 
-				for range ticker.C {
-					select {
-					case <-done.C:
-						return
-					case requestCh <- tt.datapointsPerRequest:
-					default:
-					}
+			for range ticker.C {
+				select {
+				case <-done.C:
+					return
+				case requestCh <- tt.datapointsPerRequest:
+				default:
 				}
-			}()
-
-			var ingestedDatapoints, rejectedRequests uint32
-
-			for datapoints := range requestCh {
-				go func(datapoints int) {
-					ctx := context.Background()
-					if IsRateBudgetAvailable(ctx, tt.orgId) {
-						rateLimit(ctx, tt.orgId, datapoints)
-						atomic.AddUint32(&ingestedDatapoints, uint32(datapoints))
-					} else {
-						atomic.AddUint32(&rejectedRequests, 1)
-					}
-				}(datapoints)
 			}
+		}()
 
-			if atomic.LoadUint32(&ingestedDatapoints) < tt.expectedIngestedDatapointsMin || atomic.LoadUint32(&ingestedDatapoints) > tt.expectedIngestedDatapointsMax {
-				t.Fatalf("ingested datapoints is outside expected range. Expected %d - %d, Got %d", tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, atomic.LoadUint32(&ingestedDatapoints))
-			}
+		var ingestedDatapoints, rejectedRequests uint32
 
-			if atomic.LoadUint32(&rejectedRequests) < tt.expectedRejectedRequestsMin || atomic.LoadUint32(&rejectedRequests) > tt.expectedRejectedRequestsMax {
-				t.Fatalf("rejected requests is outside expected range. Expected %d - %d, Got %d", tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
-			}
-		})
+		wg := sync.WaitGroup{}
+		for datapoints := range requestCh {
+			wg.Add(1)
+			go func(datapoints int) {
+				defer wg.Done()
+				ctx := context.Background()
+				if IsRateBudgetAvailable(ctx, tt.orgId) {
+					rateLimit(ctx, tt.orgId, datapoints)
+					atomic.AddUint32(&ingestedDatapoints, uint32(datapoints))
+				} else {
+					atomic.AddUint32(&rejectedRequests, 1)
+				}
+			}(datapoints)
+		}
+
+		wg.Wait()
+
+		if atomic.LoadUint32(&ingestedDatapoints) < tt.expectedIngestedDatapointsMin || atomic.LoadUint32(&ingestedDatapoints) > tt.expectedIngestedDatapointsMax {
+			t.Fatalf("%s: ingested datapoints is outside expected range. Expected %d - %d, Got %d", tt.name, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, atomic.LoadUint32(&ingestedDatapoints))
+		}
+
+		if atomic.LoadUint32(&rejectedRequests) < tt.expectedRejectedRequestsMin || atomic.LoadUint32(&rejectedRequests) > tt.expectedRejectedRequestsMax {
+			t.Fatalf("%s: rejected requests is outside expected range. Expected %d - %d, Got %d", tt.name, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
+		}
 	}
 }
