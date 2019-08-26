@@ -59,7 +59,12 @@ func TestConfigureRateLimits(t *testing.T) {
 	}
 }
 
-// TestLimitingRate is a bit racy, but since it tests a rate limiter I can't think of a better way to do it
+// TestLimitingRate is a bit racy, but since it tests a rate limiter I can't think of a better way to do it.
+// In this test we're testing the limiter with a defined number of requests per time and a defined rate limit,
+// then we check if the expected number of requests has been accepted / rejected. But even if theoretically
+// we know how many requests should get accepted / rejected, it can always be that due to how the processes
+// get scheduled a few more / less get accepted / rejected.
+// That's why the test is checking for minimums and maximums of a range, instead of checking for an exact number.
 func TestLimitingRate(t *testing.T) {
 	tests := []struct {
 		name                          string
