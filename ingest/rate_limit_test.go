@@ -2,6 +2,7 @@ package ingest
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -65,14 +66,16 @@ func TestConfigureRateLimits(t *testing.T) {
 // we know how many requests should get accepted / rejected, it can always be that due to how the processes
 // get scheduled a few more / less get accepted / rejected.
 // That's why the test is checking for minimums and maximums of a range, instead of checking for an exact number.
+// note: this mimics what happens during an ingestion request:
+// * first call IsRateBudgetAvailable to see if the request would be rejected
+// * then rateLimit - assuming the "request" was not rejected to see if a batch of points would be rejected
 func TestLimitingRate(t *testing.T) {
 	tests := []struct {
 		name                          string
-		limitStr                      string
-		wantErr                       bool
+		limit                         int
 		orgId                         int
-		requestRate                   int    // how many requests we receive per second
-		datapointsPerRequest          int    // how many datapoints are in each request
+		requestRate                   int    // how many requests we issue per second
+		datapointsPerRequest          int    // how many datapoints to mimic per request
 		testTime                      int    // number of seconds to run the test
 		expectedIngestedDatapointsMin uint32 // min number of datapoints that should get ingested
 		expectedIngestedDatapointsMax uint32 // max number of datapoints that should get ingested
@@ -80,9 +83,8 @@ func TestLimitingRate(t *testing.T) {
 		expectedRejectedRequestsMax   uint32 // max number of requests that should get rejected
 	}{
 		{
-			name:                 "1000 datapoints/sec, 100 reqs/sec, 100 datapoints/req",
-			limitStr:             "1:1000",
-			wantErr:              false,
+			name:                 "100 reqs/sec, 100 datapoints/req with 1 kHz limit",
+			limit:                1000,
 			orgId:                1,
 			requestRate:          100,
 			datapointsPerRequest: 100,
@@ -96,9 +98,8 @@ func TestLimitingRate(t *testing.T) {
 			expectedRejectedRequestsMin:   875,
 			expectedRejectedRequestsMax:   925,
 		}, {
-			name:                 "100 datapoints/sec, 10 reqs/sec, 50 datapoints/req",
-			limitStr:             "1:100",
-			wantErr:              false,
+			name:                 "10 reqs/sec, 50 datapoints/req with 100 Hz limit",
+			limit:                100,
 			orgId:                1,
 			requestRate:          10,
 			datapointsPerRequest: 50,
@@ -112,9 +113,8 @@ func TestLimitingRate(t *testing.T) {
 			expectedRejectedRequestsMin:   70,
 			expectedRejectedRequestsMax:   90,
 		}, {
-			name:                 "333 datapoints/sec, 7 reqs/sec, 123 datapoints/req",
-			limitStr:             "1:333",
-			wantErr:              false,
+			name:                 "7 reqs/sec, 123 datapoints/req with 333 Hz limit",
+			limit:                333,
 			orgId:                1,
 			requestRate:          7,
 			datapointsPerRequest: 123,
@@ -131,15 +131,17 @@ func TestLimitingRate(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if err := ConfigureRateLimits(tt.limitStr); (err != nil) != tt.wantErr {
-			t.Errorf("%s: ConfigureRateLimits() error = %v, wantErr %v", tt.name, err, tt.wantErr)
+		if err := ConfigureRateLimits(fmt.Sprintf("%d:%d", tt.orgId, tt.limit)); err != nil {
+			t.Errorf("%s: ConfigureRateLimits() got error = %v", tt.name, err)
 		}
 
-		done := time.NewTimer(time.Duration(tt.testTime) * time.Second)
 		requestCh := make(chan int, 1000)
 
 		go func() {
+
+			done := time.NewTimer(time.Duration(tt.testTime) * time.Second)
 			ticker := time.NewTicker(time.Second / time.Duration(tt.requestRate))
+
 			defer ticker.Stop()
 			defer close(requestCh)
 
@@ -173,11 +175,11 @@ func TestLimitingRate(t *testing.T) {
 		wg.Wait()
 
 		if atomic.LoadUint32(&ingestedDatapoints) < tt.expectedIngestedDatapointsMin || atomic.LoadUint32(&ingestedDatapoints) > tt.expectedIngestedDatapointsMax {
-			t.Fatalf("%s: ingested datapoints is outside expected range. Expected %d - %d, Got %d", tt.name, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, atomic.LoadUint32(&ingestedDatapoints))
+			t.Fatalf("%s: ingested datapoints expected in range %d - %d, Got %d", tt.name, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, atomic.LoadUint32(&ingestedDatapoints))
 		}
 
 		if atomic.LoadUint32(&rejectedRequests) < tt.expectedRejectedRequestsMin || atomic.LoadUint32(&rejectedRequests) > tt.expectedRejectedRequestsMax {
-			t.Fatalf("%s: rejected requests is outside expected range. Expected %d - %d, Got %d", tt.name, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
+			t.Fatalf("%s: rejected requests expected in range %d - %d, Got %d", tt.name, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
 		}
 	}
 }
