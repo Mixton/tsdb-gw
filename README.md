@@ -18,6 +18,9 @@ They handle traffic toward [Cortex](https://github.com/weaveworks/cortex) and [M
   Handles ingestion with the corresponding plugin, but typical deployments all publish into Kafka.
   [Available http routes](./cmd/tsdb-gw/main.go)
 
+  * [rate limiter](./documentation/ratelimiter.md)
+
+
 ## persister-gw
   [Available http routes](./cmd/persister-gw/main.go)
   TODO. @jtlisi
