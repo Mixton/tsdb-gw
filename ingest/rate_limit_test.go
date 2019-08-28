@@ -136,6 +136,7 @@ func TestLimitingRate(t *testing.T) {
 		}
 
 		requestCh := make(chan int, 1000)
+		ctx, cancel := context.WithCancel(context.Background())
 
 		go func() {
 
@@ -148,6 +149,7 @@ func TestLimitingRate(t *testing.T) {
 			for range ticker.C {
 				select {
 				case <-done.C:
+					cancel()
 					return
 				case requestCh <- tt.datapointsPerRequest:
 				default:
@@ -162,7 +164,6 @@ func TestLimitingRate(t *testing.T) {
 			wg.Add(1)
 			go func(datapoints int) {
 				defer wg.Done()
-				ctx := context.Background()
 				if IsRateBudgetAvailable(ctx, tt.orgId) {
 					rateLimit(ctx, tt.orgId, datapoints)
 					atomic.AddUint32(&ingestedDatapoints, uint32(datapoints))
