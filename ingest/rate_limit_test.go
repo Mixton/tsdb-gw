@@ -165,8 +165,18 @@ func TestLimitingRate(t *testing.T) {
 			go func(datapoints int) {
 				defer wg.Done()
 				if IsRateBudgetAvailable(ctx, tt.orgId) {
-					rateLimit(ctx, tt.orgId, datapoints)
-					atomic.AddUint32(&ingestedDatapoints, uint32(datapoints))
+					err := rateLimit(ctx, tt.orgId, datapoints)
+					if err != nil {
+						if err == ErrRequestExceedsBurst {
+							// TODO: shouldn't we have a test case that triggers this case?
+						} else if err == context.Canceled {
+							// that's not unexpected, because we're canceling the context once testTime has passed
+						} else {
+							t.Fatalf("%s: rateLimit returned unexpected error: %v", tt.name, err)
+						}
+					} else {
+						atomic.AddUint32(&ingestedDatapoints, uint32(datapoints))
+					}
 				} else {
 					atomic.AddUint32(&rejectedRequests, 1)
 				}
