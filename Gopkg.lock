@@ -258,7 +258,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:77092d96d2ca4b46b3ba0ae86abd609514528496916cdab56ed2c9d099a6a0ef"
+  digest = "1:1782965a12684ac4cdae2e1273365966328556c4f83398e055ea8e76a0cf7881"
   name = "github.com/grafana/metrictank"
   packages = [
     "cluster/partitioner",
@@ -273,7 +273,7 @@
     "util",
   ]
   pruneopts = "NUT"
-  revision = "c7715cb2dd264a00e595125ae16771b5696c40d4"
+  revision = "36ab5667d40d7d0eaa6677f72940640582be252a"
 
 [[projects]]
   branch = "master"
