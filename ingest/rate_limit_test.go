@@ -81,6 +81,8 @@ func TestLimitingRate(t *testing.T) {
 		expectedIngestedDatapointsMax uint32 // max number of datapoints that should get ingested
 		expectedRejectedRequestsMin   uint32 // min number of requests that should get rejected
 		expectedRejectedRequestsMax   uint32 // max number of requests that should get rejected
+		expectedBurstExceededMin      uint32 // min number of requests which resulted in burst exceeded error
+		expectedBurstExceededMax      uint32 // max number of requests which resulted in burst exceeded error
 	}{
 		{
 			name:                 "100 reqs/sec, 100 datapoints/req with 1 kHz limit",
@@ -127,6 +129,21 @@ func TestLimitingRate(t *testing.T) {
 			expectedIngestedDatapointsMax: 4305,
 			expectedRejectedRequestsMin:   30,
 			expectedRejectedRequestsMax:   50,
+		}, {
+			name:                 "1 reqs/sec, 1000 datapoints/req with 500 Hz limit",
+			limit:                500,
+			orgId:                1,
+			requestRate:          1,
+			datapointsPerRequest: 1000,
+			testTime:             10,
+
+			// - we're expecting that the burst rate gets exceeded and the correct error gets returned
+			expectedIngestedDatapointsMin: 0,
+			expectedIngestedDatapointsMax: 0,
+			expectedRejectedRequestsMin:   0,
+			expectedRejectedRequestsMax:   0,
+			expectedBurstExceededMin:      8,
+			expectedBurstExceededMax:      12,
 		},
 	}
 
@@ -157,7 +174,7 @@ func TestLimitingRate(t *testing.T) {
 			}
 		}()
 
-		var ingestedDatapoints, rejectedRequests uint32
+		var ingestedDatapoints, rejectedRequests, burstExceeded uint32
 
 		wg := sync.WaitGroup{}
 		for datapoints := range requestCh {
@@ -168,7 +185,7 @@ func TestLimitingRate(t *testing.T) {
 					err := rateLimit(ctx, tt.orgId, datapoints)
 					if err != nil {
 						if err == ErrRequestExceedsBurst {
-							// TODO: shouldn't we have a test case that triggers this case?
+							atomic.AddUint32(&burstExceeded, 1)
 						} else if err == context.Canceled {
 							// that's not unexpected, because we're canceling the context once testTime has passed
 						} else {
@@ -193,6 +210,10 @@ func TestLimitingRate(t *testing.T) {
 			t.Fatalf("%s: rejected requests expected in range %d - %d, Got %d", tt.name, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
 		}
 
-		t.Logf("ingestedDatapoints: %d (min/max %d/%d) rejectedRequests: %d (min/max %d/%d)", ingestedDatapoints, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, rejectedRequests, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax)
+		if atomic.LoadUint32(&burstExceeded) < tt.expectedBurstExceededMin || atomic.LoadUint32(&burstExceeded) > tt.expectedBurstExceededMax {
+			t.Fatalf("%s: expected number of burst exceeded errors %d - %d, Got %d", tt.name, tt.expectedBurstExceededMin, tt.expectedBurstExceededMax, atomic.LoadUint32(&burstExceeded))
+		}
+
+		t.Logf("ingestedDatapoints: %d (min/max %d/%d) rejectedRequests: %d (min/max %d/%d) burstExceeded: %d (min/max %d/%d)", ingestedDatapoints, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, rejectedRequests, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, burstExceeded, tt.expectedBurstExceededMin, tt.expectedBurstExceededMax)
 	}
 }
