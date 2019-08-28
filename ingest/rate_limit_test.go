@@ -95,7 +95,7 @@ func TestLimitingRate(t *testing.T) {
 			// - in total 1000 requests should be made, out of which around 100 (10000/100) should get accepted, around 900 should get rejected
 			expectedIngestedDatapointsMin: 7500,
 			expectedIngestedDatapointsMax: 12500,
-			expectedRejectedRequestsMin:   875,
+			expectedRejectedRequestsMin:   800,
 			expectedRejectedRequestsMax:   925,
 		}, {
 			name:                 "10 reqs/sec, 50 datapoints/req with 100 Hz limit",
@@ -110,7 +110,7 @@ func TestLimitingRate(t *testing.T) {
 			// - in total 100 requests should be made, out of which around 20 (1000/50) should get accepted, around 80 should get rejected
 			expectedIngestedDatapointsMin: 500,
 			expectedIngestedDatapointsMax: 1500,
-			expectedRejectedRequestsMin:   70,
+			expectedRejectedRequestsMin:   60,
 			expectedRejectedRequestsMax:   90,
 		}, {
 			name:                 "7 reqs/sec, 123 datapoints/req with 333 Hz limit",
@@ -125,7 +125,7 @@ func TestLimitingRate(t *testing.T) {
 			// - in total 70 requests should be made, out of which around 27 (3333/123) should get accepted, around 43 should get rejected
 			expectedIngestedDatapointsMin: 2460,
 			expectedIngestedDatapointsMax: 4305,
-			expectedRejectedRequestsMin:   35,
+			expectedRejectedRequestsMin:   30,
 			expectedRejectedRequestsMax:   50,
 		},
 	}
@@ -192,5 +192,7 @@ func TestLimitingRate(t *testing.T) {
 		if atomic.LoadUint32(&rejectedRequests) < tt.expectedRejectedRequestsMin || atomic.LoadUint32(&rejectedRequests) > tt.expectedRejectedRequestsMax {
 			t.Fatalf("%s: rejected requests expected in range %d - %d, Got %d", tt.name, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax, atomic.LoadUint32(&rejectedRequests))
 		}
+
+		t.Logf("ingestedDatapoints: %d (min/max %d/%d) rejectedRequests: %d (min/max %d/%d)", ingestedDatapoints, tt.expectedIngestedDatapointsMin, tt.expectedIngestedDatapointsMax, rejectedRequests, tt.expectedRejectedRequestsMin, tt.expectedRejectedRequestsMax)
 	}
 }
