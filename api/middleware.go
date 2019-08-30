@@ -110,7 +110,7 @@ func IngestRateLimiter() macaron.Handler {
 	}
 }
 
-func (a *Api) GenerateHandlers(kind string, enforceRoles, datadog bool, handlers ...macaron.Handler) []macaron.Handler {
+func (a *Api) GenerateHandlers(kind string, enforceRoles, datadog, rateLimit bool, handlers ...macaron.Handler) []macaron.Handler {
 	combinedHandlers := []macaron.Handler{}
 	if kind == "write" {
 		if datadog {
@@ -128,7 +128,7 @@ func (a *Api) GenerateHandlers(kind string, enforceRoles, datadog bool, handlers
 		}
 	}
 
-	if ingest.UseRateLimit() {
+	if ingest.UseRateLimit() && rateLimit {
 		combinedHandlers = append(combinedHandlers, IngestRateLimiter())
 	}
 

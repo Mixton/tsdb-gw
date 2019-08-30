@@ -151,11 +151,11 @@ func handleShutdown(done chan struct{}, interrupt chan os.Signal, inputs []Stopp
 
 // InitRoutes initializes the routes.
 func initRoutes(a *api.Api, writeProxy *cortexPublish.CortexWriteProxy, enforceRoles bool) {
-	a.Router.Any("/api/prom/*", a.GenerateHandlers("read", enforceRoles, false, a.PromStats("cortex-read"), cortex.Proxy)...)
-	a.Router.Any("/api/prom/push", a.GenerateHandlers("write", enforceRoles, false, a.PromStats("cortex-write"), writeProxy.Write)...)
-	a.Router.Post("/datadog/api/v1/series", a.GenerateHandlers("write", enforceRoles, true, datadog.DataDogSeries)...)
-	a.Router.Post("/datadog/api/v1/check_run", a.GenerateHandlers("write", enforceRoles, true, datadog.DataDogCheck)...)
-	a.Router.Post("/datadog/intake", a.GenerateHandlers("write", enforceRoles, true, datadog.DataDogIntake)...)
-	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, ingest.OpenTSDBWrite)...)
-	a.Router.Post("/metrics", a.GenerateHandlers("write", enforceRoles, false, ingest.Metrics)...)
+	a.Router.Any("/api/prom/*", a.GenerateHandlers("read", enforceRoles, false, false, a.PromStats("cortex-read"), cortex.Proxy)...)
+	a.Router.Any("/api/prom/push", a.GenerateHandlers("write", enforceRoles, false, false, a.PromStats("cortex-write"), writeProxy.Write)...)
+	a.Router.Post("/datadog/api/v1/series", a.GenerateHandlers("write", enforceRoles, true, false, datadog.DataDogSeries)...)
+	a.Router.Post("/datadog/api/v1/check_run", a.GenerateHandlers("write", enforceRoles, true, false, datadog.DataDogCheck)...)
+	a.Router.Post("/datadog/intake", a.GenerateHandlers("write", enforceRoles, true, false, datadog.DataDogIntake)...)
+	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, false, ingest.OpenTSDBWrite)...)
+	a.Router.Post("/metrics", a.GenerateHandlers("write", enforceRoles, false, false, ingest.Metrics)...)
 }
