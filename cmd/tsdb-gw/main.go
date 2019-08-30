@@ -178,21 +178,21 @@ func handleShutdown(done chan struct{}, interrupt chan os.Signal, inputs []Stopp
 
 func initRoutes(a *api.Api, enforceRoles bool) {
 	a.Router.Use(api.RequestStats())
-	a.Router.Get("/metrics/index.json", a.GenerateHandlers("read", enforceRoles, false, metrictank.MetrictankProxy("/metrics/index.json"))...)
-	a.Router.Get("/graphite/metrics/index.json", a.GenerateHandlers("read", enforceRoles, false, metrictank.MetrictankProxy("/metrics/index.json"))...)
-	a.Router.Any("/prometheus/*", a.GenerateHandlers("read", enforceRoles, false, metrictank.PrometheusProxy)...)
+	a.Router.Get("/metrics/index.json", a.GenerateHandlers("read", enforceRoles, false, false, metrictank.MetrictankProxy("/metrics/index.json"))...)
+	a.Router.Get("/graphite/metrics/index.json", a.GenerateHandlers("read", enforceRoles, false, false, metrictank.MetrictankProxy("/metrics/index.json"))...)
+	a.Router.Any("/prometheus/*", a.GenerateHandlers("read", enforceRoles, false, false, metrictank.PrometheusProxy)...)
 	if len(*timerangeLimit) > 0 {
-		a.Router.Any("/graphite/*", a.GenerateHandlers("read", enforceRoles, false, api.CaptureBody, binding.Bind(graphite.FromTo{}), a.PromStats("graphite"), graphite.GraphiteProxy)...)
+		a.Router.Any("/graphite/*", a.GenerateHandlers("read", enforceRoles, false, false, api.CaptureBody, binding.Bind(graphite.FromTo{}), a.PromStats("graphite"), graphite.GraphiteProxy)...)
 	} else {
-		a.Router.Any("/graphite/*", a.GenerateHandlers("read", enforceRoles, false, a.PromStats("graphite"), graphite.GraphiteProxy)...)
+		a.Router.Any("/graphite/*", a.GenerateHandlers("read", enforceRoles, false, false, a.PromStats("graphite"), graphite.GraphiteProxy)...)
 	}
-	a.Router.Post("/metrics", a.GenerateHandlers("write", enforceRoles, false, ingest.Metrics)...)
-	a.Router.Post("/datadog/api/v1/series", a.GenerateHandlers("write", enforceRoles, true, datadog.DataDogSeries)...)
-	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, ingest.OpenTSDBWrite)...)
-	a.Router.Any("/prometheus/write", a.GenerateHandlers("write", enforceRoles, false, ingest.PrometheusMTWrite)...)
-	a.Router.Post("/metrics/delete", a.GenerateHandlers("write", enforceRoles, false, metrictank.MetrictankProxy("/metrics/delete"))...)
+	a.Router.Post("/metrics", a.GenerateHandlers("write", enforceRoles, false, true, ingest.Metrics)...)
+	a.Router.Post("/datadog/api/v1/series", a.GenerateHandlers("write", enforceRoles, true, false, datadog.DataDogSeries)...)
+	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, false, ingest.OpenTSDBWrite)...)
+	a.Router.Any("/prometheus/write", a.GenerateHandlers("write", enforceRoles, false, false, ingest.PrometheusMTWrite)...)
+	a.Router.Post("/metrics/delete", a.GenerateHandlers("write", enforceRoles, false, false, metrictank.MetrictankProxy("/metrics/delete"))...)
 
 	if len(*importerURL) > 0 {
-		a.Router.Post("/metrics/import", a.GenerateHandlers("write", enforceRoles, false, ingest.MtBulkImporter())...)
+		a.Router.Post("/metrics/import", a.GenerateHandlers("write", enforceRoles, false, false, ingest.MtBulkImporter())...)
 	}
 }
