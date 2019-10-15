@@ -36,7 +36,7 @@ var (
 	enforceRoles = flag.Bool("enforce-roles", false, "enable role verification during authentication")
 	confFile     = flag.String("config", "/etc/gw/tsdb-gw.ini", "configuration file path")
 
-	broker = flag.String("kafka-tcp-addr", "localhost:9092", "kafka tcp address for metrics")
+	brokers = flag.String("kafka-tcp-addr", "localhost:9092", "kafka tcp address(es) for metrics, in csv host[:port] format")
 
 	graphiteURL   = flag.String("graphite-url", "http://localhost:8080", "graphite-api address")
 	metrictankURL = flag.String("metrictank-url", "http://localhost:6060", "metrictank address")
@@ -99,7 +99,7 @@ func main() {
 	}
 	defer traceCloser.Close()
 
-	publisher := kafka.New(*broker, true)
+	publisher := kafka.New(strings.Split(*brokers, ","), true)
 	if publisher == nil {
 		publish.Init(nil)
 	} else {

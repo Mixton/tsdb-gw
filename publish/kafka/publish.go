@@ -20,7 +20,6 @@ import (
 
 var (
 	producer        sarama.SyncProducer
-	brokers         []string
 	kafkaVersionStr string
 	keyCache        *keycache.KeyCache
 
@@ -158,7 +157,7 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 	return topics, nil
 }
 
-func New(broker string, autoInterval bool) *mtPublisher {
+func New(brokers []string, autoInterval bool) *mtPublisher {
 	if !enabled {
 		return nil
 	}
@@ -201,8 +200,6 @@ func New(broker string, autoInterval bool) *mtPublisher {
 	if err != nil {
 		log.Fatalf("failed to validate kafka config. %s", err)
 	}
-
-	brokers = []string{broker}
 
 	client, err := sarama.NewClient(brokers, config)
 	if err != nil {
