@@ -21,8 +21,6 @@ rm -rf $BUILD_DIR/*
 cd ../
 cd cmd/tsdb-gw
 go build -ldflags "-X main.GitHash=$VERSION" -o $BUILD_DIR/tsdb-gw
-cd ../cortex-gw
-go build -ldflags "-X main.GitHash=$VERSION" -o $BUILD_DIR/cortex-gw
 cd ../persister-gw
 go build -ldflags "-X main.GitHash=$VERSION" -o $BUILD_DIR/persister-gw
 

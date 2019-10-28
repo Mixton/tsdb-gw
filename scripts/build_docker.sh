@@ -16,8 +16,5 @@ cp build/* scripts/build/
 docker build -f scripts/Dockerfile -t raintank/tsdb-gw:$VERSION .
 docker tag raintank/tsdb-gw:$VERSION raintank/tsdb-gw:latest
 
-docker build -f cmd/cortex-gw/Dockerfile -t raintank/cortex-gw:$VERSION .
-docker tag raintank/cortex-gw:$VERSION raintank/cortex-gw:latest
-
 docker build -f cmd/persister-gw/Dockerfile -t raintank/persister-gw:$VERSION .
 docker tag raintank/persister-gw:$VERSION raintank/persister-gw:latest
