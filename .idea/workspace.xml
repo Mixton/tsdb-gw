@@ -47,15 +47,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cmd/cortex-gw/main.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/middleware_test.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
@@ -157,8 +148,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/query/cortex/cortex.go" />
-        <option value="$PROJECT_DIR$/cmd/cortex-gw/main_test.go" />
         <option value="$PROJECT_DIR$/api/models/main_test.go" />
         <option value="$PROJECT_DIR$/api/main_test.go" />
         <option value="$PROJECT_DIR$/api/middleware.go" />
@@ -229,7 +218,6 @@
               <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
               <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
               <item name="cmd" type="462c0819:PsiDirectoryNode" />
-              <item name="cortex-gw" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
@@ -282,7 +270,6 @@
               <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
               <item name="tsdb-gw" type="462c0819:PsiDirectoryNode" />
               <item name="query" type="462c0819:PsiDirectoryNode" />
-              <item name="cortex" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="tsdb-gw" type="b2602c69:ProjectViewProjectNode" />
@@ -833,16 +820,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/publish/cortex/proxy.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-          <folding>
-            <element signature="e#16#261#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/go/src/net/dial.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="320">
@@ -911,16 +888,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="33" column="9" selection-start-line="33" selection-start-column="9" selection-end-line="33" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/query/cortex/cortex.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="33" column="67" selection-start-line="33" selection-start-column="67" selection-end-line="33" selection-end-column="67" />
-          <folding>
-            <element signature="e#16#154#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -997,13 +964,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="45" column="34" lean-forward="true" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cmd/cortex-gw/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="10" lean-forward="true" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
         </state>
       </provider>
     </entry>

@@ -72,7 +72,7 @@ func TestReverseProxyWebSocketWithHijacker(t *testing.T) {
 	rproxy := httputil.NewSingleHostReverseProxy(backURL)
 
 	a := New("grafana-instance", "test-ws")
-	a.Router.Any("/ws", a.GenerateHandlers("read", false, false, false, a.PromStats("cortex-read"), func(c *models.Context) {
+	a.Router.Any("/ws", a.GenerateHandlers("read", false, false, false, a.PromStats("read"), func(c *models.Context) {
 		rproxy.ServeHTTP(c.Resp, c.Req.Request)
 	})...)
 
