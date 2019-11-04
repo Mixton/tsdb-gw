@@ -55,10 +55,6 @@ ignored = [
 
 [[constraint]]
   branch = "master"
-  name = "github.com/oxtoacart/bpool"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/prometheus/client_golang"
 
 [[constraint]]
