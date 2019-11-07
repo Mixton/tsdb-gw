@@ -9,6 +9,4 @@ VERSION=`git describe --always`
 
 docker push raintank/tsdb-gw:$VERSION
 
-docker push raintank/cortex-gw:$VERSION
-
 docker push raintank/persister-gw:$VERSION

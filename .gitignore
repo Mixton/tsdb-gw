@@ -9,7 +9,6 @@
 .bundle/
 .vscode
 /build/
-/cmd/cortex-gw/cortex-gw
 /cmd/persister-gw/persister-gw
 /cmd/tsdb-gw/tsdb-gw
 /scripts/build/

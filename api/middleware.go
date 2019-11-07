@@ -28,7 +28,7 @@ import (
 
 var (
 	requestDuration = prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Namespace: "cortex_gw",
+		Namespace: "tsdb_gw",
 		Name:      "request_duration_seconds",
 		Help:      "Time (in seconds) spent serving HTTP requests.",
 		// github.com/weaveworks/common/instrument/instrument.DefBuckets

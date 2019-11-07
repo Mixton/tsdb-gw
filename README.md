@@ -1,14 +1,6 @@
-# Grafana Gateways
+# TSDB Gateway
 
-These services are the gateways to our cloud platform.
-They handle traffic toward [Cortex](https://github.com/weaveworks/cortex) and [Metrictank](https://github.com/grafana/metrictank).
-
-## cortex-gw
-  * Proxies requests towards cortex
-  * Uses basic auth to verify requests.
-  The username corresponds to the instance id of the desired cortex tenant, `username: <instance-id>`
-  The password is either a [grafana.com](grafana.com) api_key or a key located in the file auth, `password: <api_key>`
-  [Available http routes](./cmd/cortex-gw/main.go)
+This gateway provides access to the Hosted Metrics Graphite service at Grafana Labs, powered by [Metrictank](https://github.com/grafana/metrictank).
 
 ## tsdb-gw
   * Uses basic auth to verify requests.
@@ -20,11 +12,10 @@ They handle traffic toward [Cortex](https://github.com/weaveworks/cortex) and [M
 
   * [rate limiter](./documentation/ratelimiter.md)
 
-
 ## persister-gw
+
   [Available http routes](./cmd/persister-gw/main.go)
   TODO. @jtlisi
-
 
 ## Ingestion support
 
