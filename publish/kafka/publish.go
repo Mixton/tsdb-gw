@@ -35,6 +35,7 @@ var (
 	sendErrOther    = stats.NewCounterRate32("metrics.send_error.other")
 
 	topicsStr           string
+	rewriteOrgIdStr     string
 	onlyOrgIds          util.Int64SliceFlag
 	discardPrefixesStr  string
 	codec               string
@@ -56,6 +57,10 @@ type topicSettings struct {
 	numPartitions   int32
 	onlyOrgId       int
 	discardPrefixes []string
+	orgIdRewrite    struct {
+		source int
+		target int
+	}
 }
 
 type mtPublisher struct {
@@ -70,6 +75,7 @@ type Partitioner interface {
 
 func init() {
 	flag.StringVar(&topicsStr, "metrics-topic", "mdm", "topic for metrics (may be given multiple times as a comma-separated list)")
+	flag.StringVar(&rewriteOrgIdStr, "rewrite-org-id", "", "rewrite org id; for example 33:45 means rewriting org id 33 into 45 (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.Var(&onlyOrgIds, "only-org-id", "restrict publishing data belonging to org id; 0 means no restriction (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&discardPrefixesStr, "discard-prefixes", "", "discard data points starting with one of the given prefixes separated by | (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
@@ -98,7 +104,7 @@ func getCompression(codec string) sarama.CompressionCodec {
 	}
 }
 
-func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64, discardPrefixesStr string) ([]topicSettings, error) {
+func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int64, discardPrefixesStr string, rewriteOrgIdStr string) ([]topicSettings, error) {
 	var topics []topicSettings
 	partitionSchemes := strings.Split(partitionSchemesStr, ",")
 	topicsStrList := strings.Split(topicsStr, ",")
@@ -106,6 +112,11 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 	if discardPrefixesStr != "" {
 		discardPrefixesStrList = strings.Split(discardPrefixesStr, ",")
 	}
+	var rewriteOrgIdStrList []string
+	if rewriteOrgIdStr != "" {
+		rewriteOrgIdStrList = strings.Split(rewriteOrgIdStr, ",")
+	}
+
 	if len(partitionSchemes) > 1 && len(partitionSchemes) != len(topicsStrList) {
 		return nil, errors.New("More partition schemes (metrics-partition-scheme) than topics (metrics-topic)")
 	}
@@ -114,6 +125,9 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 	}
 	if len(discardPrefixesStrList) > 0 && len(discardPrefixesStrList) != len(topicsStrList) {
 		return nil, errors.New("More discard prefixes (discard-prefixes) than topics (metrics-topic)")
+	}
+	if len(rewriteOrgIdStrList) > 0 && len(rewriteOrgIdStrList) != len(topicsStrList) {
+		return nil, errors.New("More org id rewrites (rewrite-org-id) than topics (metrics-topic)")
 	}
 	for i, topicName := range topicsStrList {
 		topicName = strings.TrimSpace(topicName)
@@ -153,6 +167,22 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 			topic.discardPrefixes = strings.FieldsFunc(discardPrefixesStrList[i], f)
 		}
 
+		if len(rewriteOrgIdStrList) > 0 && rewriteOrgIdStrList[i] != "" {
+			parts := strings.Split(rewriteOrgIdStrList[i], ":")
+			if len(parts) != 2 {
+				return nil, errors.New("incorrect number of org ids in 'rewrite-org-id'")
+			}
+			source, err := strconv.ParseUint(parts[0], 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			topic.orgIdRewrite.source = int(source)
+			target, err := strconv.ParseUint(parts[1], 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			topic.orgIdRewrite.target = int(target)
+		}
 		topics = append(topics, topic)
 	}
 	return topics, nil
@@ -191,7 +221,7 @@ func New(brokers []string, autoInterval bool) *mtPublisher {
 		autoInterval: autoInterval,
 	}
 
-	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr, onlyOrgIds, discardPrefixesStr)
+	mp.topics, err = parseTopicSettings(partitionSchemesStr, topicsStr, onlyOrgIds, discardPrefixesStr, rewriteOrgIdStr)
 	if err != nil {
 		log.Fatalf("failed to initialize partitioner: %s", err)
 	}
@@ -249,6 +279,61 @@ func New(brokers []string, autoInterval bool) *mtPublisher {
 	return &mp
 }
 
+type MetricDataType int
+
+const (
+	MetricData MetricDataType = iota
+	MetricPoint
+	MetricPointNoOrg
+)
+
+type MetricDataBuffer struct {
+	Data []byte
+	Type MetricDataType
+}
+
+func dataFromMetricData(metric *schema.MetricData) (MetricDataBuffer, error) {
+	var mdBuffer MetricDataBuffer
+	var err error
+	if v2 {
+		var mkey schema.MKey
+		mkey, err = schema.MKeyFromString(metric.Id)
+		if err != nil {
+			return mdBuffer, err
+		}
+		ok := keyCache.Touch(mkey)
+		// we've seen this key recently. we can use the optimized format
+		if ok {
+			mdBuffer.Data = bufferPool33.Get()
+			mp := schema.MetricPoint{
+				MKey:  mkey,
+				Value: metric.Value,
+				Time:  uint32(metric.Time),
+			}
+			if v2Org {
+				mdBuffer.Data = mdBuffer.Data[:33]             // this range will contain valid data
+				mdBuffer.Data[0] = byte(msg.FormatMetricPoint) // store version in first byte
+				_, err = mp.Marshal32(mdBuffer.Data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-33
+				mdBuffer.Type = MetricPoint
+			} else {
+				mdBuffer.Data = mdBuffer.Data[:29]                       // this range will contain valid data
+				mdBuffer.Data[0] = byte(msg.FormatMetricPointWithoutOrg) // store version in first byte
+				_, err = mp.MarshalWithoutOrg28(mdBuffer.Data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-29
+				mdBuffer.Type = MetricPointNoOrg
+			}
+		} else {
+			mdBuffer.Data = bufferPool.Get()
+			mdBuffer.Data, err = metric.MarshalMsg(mdBuffer.Data)
+			mdBuffer.Type = MetricData
+		}
+	} else {
+		mdBuffer.Data = bufferPool.Get()
+		mdBuffer.Data, err = metric.MarshalMsg(mdBuffer.Data)
+		mdBuffer.Type = MetricData
+	}
+	return mdBuffer, err
+}
+
 func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 	if producer == nil {
 		log.Debugf("dropping %d metrics as publishing is disabled", len(metrics))
@@ -286,89 +371,72 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			}
 		}
 
-		isMD := false
-		isMP := false
-		isMPNO := false
+		// cache MetricDataBuffer per orgId to avoid marshalling a given
+		// MetricData more than once per orgId
+		mdBufferCache := make(map[int]MetricDataBuffer)
 
-		var data []byte
-		if v2 {
-			var mkey schema.MKey
-			mkey, err = schema.MKeyFromString(metric.Id)
-			if err != nil {
-				return err
+	TOPICS:
+		for _, topic := range m.topics {
+			for _, prefix := range topic.discardPrefixes {
+				if strings.HasPrefix(metric.Name, prefix) {
+					continue TOPICS
+				}
 			}
-			ok := keyCache.Touch(mkey)
-			// we've seen this key recently. we can use the optimized format
-			if ok {
-				data = bufferPool33.Get()
-				mp := schema.MetricPoint{
-					MKey:  mkey,
-					Value: metric.Value,
-					Time:  uint32(metric.Time),
+
+			if topic.onlyOrgId != 0 && metric.OrgId != topic.onlyOrgId {
+				continue TOPICS
+			}
+
+			orgID := metric.OrgId
+			if topic.orgIdRewrite.source != 0 {
+				orgID = topic.orgIdRewrite.target
+			}
+
+			// retrieve MetricDataBuffer from cache if possible
+			mdBuffer, cached := mdBufferCache[orgID]
+			if !cached {
+				// rewrite orgId if needed
+				if topic.orgIdRewrite.source != 0 {
+					metric.OrgId = topic.orgIdRewrite.target
+					metric.SetId()
 				}
-				if v2Org {
-					data = data[:33]                      // this range will contain valid data
-					data[0] = byte(msg.FormatMetricPoint) // store version in first byte
-					_, err = mp.Marshal32(data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-33
-					isMP = true
-				} else {
-					data = data[:29]                                // this range will contain valid data
-					data[0] = byte(msg.FormatMetricPointWithoutOrg) // store version in first byte
-					_, err = mp.MarshalWithoutOrg28(data[:1])       // Marshal will fill up space between length and cap, i.e. bytes 2-29
-					isMPNO = true
-				}
-			} else {
-				data = bufferPool.Get()
-				data, err = metric.MarshalMsg(data)
+				mdBuffer, err = dataFromMetricData(metric)
 				if err != nil {
 					return err
 				}
-				isMD = true
-			}
-		} else {
-			data = bufferPool.Get()
-			data, err = metric.MarshalMsg(data)
-			if err != nil {
-				return err
-			}
-			isMD = true
-		}
 
-		buffersToRelease = append(buffersToRelease, data)
+				buffersToRelease = append(buffersToRelease, mdBuffer.Data)
+				mdBufferCache[orgID] = mdBuffer
 
-		for _, topic := range m.topics {
+				// restore original orgId if needed
+				if topic.orgIdRewrite.source != 0 {
+					metric.OrgId = topic.orgIdRewrite.source
+					metric.SetId()
+				}
+			}
+
 			partition, err := topic.partitioner.Partition(metric, topic.numPartitions)
 			if err != nil {
 				return err
 			}
 
-			prefixDiscarded := false
-			for _, prefix := range topic.discardPrefixes {
-				if strings.HasPrefix(metric.Name, prefix) {
-					prefixDiscarded = true
-					break
-				}
+			message := &sarama.ProducerMessage{
+				Partition: partition,
+				Topic:     topic.name,
+				Value:     sarama.ByteEncoder(mdBuffer.Data),
+			}
+			payload = append(payload, message)
+			switch mdBuffer.Type {
+			case MetricPoint:
+				pubMP[topic.name]++
+			case MetricData:
+				pubMD[topic.name]++
+			case MetricPointNoOrg:
+				pubMPNO[topic.name]++
 			}
 
-			if (topic.onlyOrgId == 0 || metric.OrgId == topic.onlyOrgId) &&
-				!prefixDiscarded {
-				message := &sarama.ProducerMessage{
-					Partition: partition,
-					Topic:     topic.name,
-					Value:     sarama.ByteEncoder(data),
-				}
-				payload = append(payload, message)
-				if isMP {
-					pubMP[topic.name]++
-				} else if isMD {
-					pubMD[topic.name]++
-				} else if isMPNO {
-					pubMPNO[topic.name]++
-				}
-			}
+			messagesSize.Value(len(mdBuffer.Data))
 		}
-
-		messagesSize.Value(len(data))
 	}
 
 	defer func() {
