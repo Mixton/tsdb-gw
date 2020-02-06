@@ -612,6 +612,30 @@ func Test_Publish(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "single_topic_single_point_rewrite_other_org_id",
+			topics: []topicSettings{
+				{
+					name:          "testTopic",
+					numPartitions: 3,
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 33,
+						target: 42,
+					},
+				},
+			},
+			data: dataSinglePoint,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataSinglePoint,
+			},
+			wantErr: false,
+		},
+		{
 			name: "single_topic_many_points",
 			topics: []topicSettings{
 				{

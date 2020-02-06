@@ -388,7 +388,7 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			}
 
 			orgID := metric.OrgId
-			if topic.orgIdRewrite.source != 0 {
+			if metric.OrgId == topic.orgIdRewrite.source {
 				orgID = topic.orgIdRewrite.target
 			}
 
@@ -396,8 +396,9 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 			mdBuffer, cached := mdBufferCache[orgID]
 			if !cached {
 				// rewrite orgId if needed
-				if topic.orgIdRewrite.source != 0 {
-					metric.OrgId = topic.orgIdRewrite.target
+				originalOrgID := metric.OrgId
+				if metric.OrgId != orgID {
+					metric.OrgId = orgID
 					metric.SetId()
 				}
 				mdBuffer, err = dataFromMetricData(metric)
@@ -409,8 +410,8 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				mdBufferCache[orgID] = mdBuffer
 
 				// restore original orgId if needed
-				if topic.orgIdRewrite.source != 0 {
-					metric.OrgId = topic.orgIdRewrite.source
+				if metric.OrgId != originalOrgID {
+					metric.OrgId = originalOrgID
 					metric.SetId()
 				}
 			}
