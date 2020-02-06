@@ -387,38 +387,34 @@ func (m *mtPublisher) Publish(metrics []*schema.MetricData) error {
 				continue TOPICS
 			}
 
-			orgID := metric.OrgId
+			// rewrite orgId if needed
+			originalOrgID := metric.OrgId
 			if metric.OrgId == topic.orgIdRewrite.source {
-				orgID = topic.orgIdRewrite.target
+				metric.OrgId = topic.orgIdRewrite.target
+				metric.SetId()
 			}
 
 			// retrieve MetricDataBuffer from cache if possible
-			mdBuffer, cached := mdBufferCache[orgID]
+			mdBuffer, cached := mdBufferCache[metric.OrgId]
 			if !cached {
-				// rewrite orgId if needed
-				originalOrgID := metric.OrgId
-				if metric.OrgId != orgID {
-					metric.OrgId = orgID
-					metric.SetId()
-				}
 				mdBuffer, err = dataFromMetricData(metric)
 				if err != nil {
 					return err
 				}
 
 				buffersToRelease = append(buffersToRelease, mdBuffer.Data)
-				mdBufferCache[orgID] = mdBuffer
-
-				// restore original orgId if needed
-				if metric.OrgId != originalOrgID {
-					metric.OrgId = originalOrgID
-					metric.SetId()
-				}
+				mdBufferCache[metric.OrgId] = mdBuffer
 			}
 
 			partition, err := topic.partitioner.Partition(metric, topic.numPartitions)
 			if err != nil {
 				return err
+			}
+
+			// restore original orgId if needed
+			if metric.OrgId != originalOrgID {
+				metric.OrgId = originalOrgID
+				metric.SetId()
 			}
 
 			message := &sarama.ProducerMessage{
