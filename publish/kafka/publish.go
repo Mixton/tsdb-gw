@@ -124,10 +124,10 @@ func parseTopicSettings(partitionSchemesStr, topicsStr string, onlyOrgIds []int6
 		return nil, errors.New("More org ids (only-org-id) than topics (metrics-topic)")
 	}
 	if len(discardPrefixesStrList) > 0 && len(discardPrefixesStrList) != len(topicsStrList) {
-		return nil, errors.New("More discard prefixes (discard-prefixes) than topics (metrics-topic)")
+		return nil, errors.New("Each topic (metrics-topic) requires discard prefixes (discard-prefixes)")
 	}
 	if len(rewriteOrgIdStrList) > 0 && len(rewriteOrgIdStrList) != len(topicsStrList) {
-		return nil, errors.New("More org id rewrites (rewrite-org-id) than topics (metrics-topic)")
+		return nil, errors.New("Each topic (metrics-topic) requires an org id rewrite (rewrite-org-id)")
 	}
 	for i, topicName := range topicsStrList {
 		topicName = strings.TrimSpace(topicName)
