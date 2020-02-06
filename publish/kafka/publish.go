@@ -75,7 +75,7 @@ type Partitioner interface {
 
 func init() {
 	flag.StringVar(&topicsStr, "metrics-topic", "mdm", "topic for metrics (may be given multiple times as a comma-separated list)")
-	flag.StringVar(&rewriteOrgIdStr, "rewrite-org-id", "", "rewrite org id; for example 33:45 means rewriting org id 33 into 45 (may be given multiple times, once per topic, as a comma-separated list)")
+	flag.StringVar(&rewriteOrgIdStr, "rewrite-org-id", "", "rewrite org id; for example 33:45 means rewriting org id 33 into 45 (may be given multiple times, if given then there must be exactly one per topic, as a comma-separated list)")
 	flag.Var(&onlyOrgIds, "only-org-id", "restrict publishing data belonging to org id; 0 means no restriction (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&discardPrefixesStr, "discard-prefixes", "", "discard data points starting with one of the given prefixes separated by | (may be given multiple times, once per topic, as a comma-separated list)")
 	flag.StringVar(&codec, "metrics-kafka-comp", "snappy", "compression: none|gzip|snappy")
