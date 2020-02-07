@@ -21,6 +21,7 @@ func Test_parseTopicSettings(t *testing.T) {
 		topicsStr           string
 		onlyOrgIdsStr       string
 		discardPrefixesStr  string
+		rewriteOrgIdStr     string
 		expected            []topicSettings
 		wantErr             bool
 	}{
@@ -30,6 +31,7 @@ func Test_parseTopicSettings(t *testing.T) {
 			topicsStr:           "",
 			onlyOrgIdsStr:       "",
 			discardPrefixesStr:  "",
+			rewriteOrgIdStr:     "",
 			expected:            []topicSettings{},
 			wantErr:             true,
 		},
@@ -48,6 +50,40 @@ func Test_parseTopicSettings(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name:                "single_topic_rewrite_org_id_missing_id",
+			partitionSchemesStr: "bySeries",
+			topicsStr:           "testTopic",
+			rewriteOrgIdStr:     "43:",
+			expected: []topicSettings{
+				{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					onlyOrgId:       0,
+					discardPrefixes: nil,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name:                "single_topic_incorrect_rewrite_org_id",
+			partitionSchemesStr: "bySeries",
+			topicsStr:           "testTopic",
+			rewriteOrgIdStr:     "xhu93:12",
+			expected: []topicSettings{
+				{
+					name: "testTopic",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					onlyOrgId:       0,
+					discardPrefixes: nil,
+				},
+			},
+			wantErr: true,
 		},
 		{
 			name:                "two_topics_same_scheme",
@@ -107,6 +143,75 @@ func Test_parseTopicSettings(t *testing.T) {
 						Method: schema.PartitionBySeries,
 					},
 					onlyOrgId: 1,
+				},
+				{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionByOrg,
+					},
+					onlyOrgId: 10,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:                "two_topics_different_orgid_rewrite_orgids",
+			partitionSchemesStr: "bySeries,byOrg",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "1,10",
+			rewriteOrgIdStr:     "100:40,10:30",
+			expected: []topicSettings{
+				{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					onlyOrgId: 1,
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 100,
+						target: 40,
+					},
+				},
+				{
+					name: "testTopic2",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionByOrg,
+					},
+					onlyOrgId: 10,
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 10,
+						target: 30,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:                "two_topics_different_orgid_rewrite_single_orgid",
+			partitionSchemesStr: "bySeries,byOrg",
+			topicsStr:           "testTopic1,testTopic2",
+			onlyOrgIdsStr:       "1,10",
+			rewriteOrgIdStr:     "1:42,",
+			expected: []topicSettings{
+				{
+					name: "testTopic1",
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					onlyOrgId: 1,
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 1,
+						target: 42,
+					},
 				},
 				{
 					name: "testTopic2",
@@ -341,7 +446,7 @@ func Test_parseTopicSettings(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			onlyOrgIds := util.Int64SliceFlag{}
 			onlyOrgIds.Set(test.onlyOrgIdsStr)
-			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr, onlyOrgIds, test.discardPrefixesStr)
+			got, err := parseTopicSettings(test.partitionSchemesStr, test.topicsStr, onlyOrgIds, test.discardPrefixesStr, test.rewriteOrgIdStr)
 			if (err != nil) != test.wantErr {
 				t.Errorf("parseTopicSettings() error = %v, wantErr %v", err, test.wantErr)
 				return
@@ -352,6 +457,9 @@ func Test_parseTopicSettings(t *testing.T) {
 				}
 				if topicSetting.onlyOrgId != test.expected[i].onlyOrgId {
 					t.Errorf("parseTopicSettings(): incorrect onlyOrgId %d, expects %d", topicSetting.onlyOrgId, test.expected[i].onlyOrgId)
+				}
+				if topicSetting.orgIdRewrite != test.expected[i].orgIdRewrite {
+					t.Errorf("parseTopicSettings(): incorrect orgIdRewrite %d, expects %d", topicSetting.orgIdRewrite, test.expected[i].orgIdRewrite)
 				}
 				if topicSetting.partitioner.Method != test.expected[i].partitioner.Method {
 					t.Errorf("parseTopicSettings(): incorrect partition scheme %s, expects %s", methodToString(topicSetting.partitioner.Method), methodToString(test.expected[i].partitioner.Method))
@@ -386,6 +494,16 @@ func Test_Publish(t *testing.T) {
 		},
 	}
 	for _, metric := range dataSinglePoint {
+		metric.SetId()
+	}
+	dataSinglePointRewrittenOrgId := []*schema.MetricData{
+		{
+			Name:     "a.b.c",
+			OrgId:    42,
+			Interval: 10,
+		},
+	}
+	for _, metric := range dataSinglePointRewrittenOrgId {
 		metric.SetId()
 	}
 	dataManyPoints := []*schema.MetricData{
@@ -460,6 +578,54 @@ func Test_Publish(t *testing.T) {
 					numPartitions: 3,
 					partitioner: &partitioner.Kafka{
 						Method: schema.PartitionBySeries,
+					},
+				},
+			},
+			data: dataSinglePoint,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataSinglePoint,
+			},
+			wantErr: false,
+		},
+		{
+			name: "single_topic_single_point_rewritten_org_id",
+			topics: []topicSettings{
+				{
+					name:          "testTopic",
+					numPartitions: 3,
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 1,
+						target: 42,
+					},
+				},
+			},
+			data: dataSinglePoint,
+			expectedData: map[string][]*schema.MetricData{
+				"testTopic": dataSinglePointRewrittenOrgId,
+			},
+			wantErr: false,
+		},
+		{
+			name: "single_topic_single_point_rewrite_other_org_id",
+			topics: []topicSettings{
+				{
+					name:          "testTopic",
+					numPartitions: 3,
+					partitioner: &partitioner.Kafka{
+						Method: schema.PartitionBySeries,
+					},
+					orgIdRewrite: struct {
+						source int
+						target int
+					}{
+						source: 33,
+						target: 42,
 					},
 				},
 			},
@@ -682,11 +848,10 @@ func Test_Publish(t *testing.T) {
 			// check that each MetricData is sent to each topic (respecting onlyOrgId) when calling Publish
 			for _, metricData := range test.data {
 				for _, topic := range test.topics {
-					if !sliceContains(test.expectedData[topic.name], metricData) {
-						// metricData is not supposed to be sent to topic
+					expectedMd := getMetricDataWithName(test.expectedData[topic.name], metricData.Name)
+					if expectedMd == nil {
 						continue
 					}
-					expectedMd := metricData
 					mockProducer.ExpectSendMessageWithCheckerFunctionAndSucceed(func(sentData []byte) error {
 						expectedDataBuf := make([]byte, 0)
 						expectedData, err := expectedMd.MarshalMsg(expectedDataBuf)
@@ -714,11 +879,11 @@ func Test_Publish(t *testing.T) {
 	}
 }
 
-func sliceContains(slice []*schema.MetricData, element *schema.MetricData) bool {
+func getMetricDataWithName(slice []*schema.MetricData, name string) *schema.MetricData {
 	for _, x := range slice {
-		if x == element {
-			return true
+		if x.Name == name {
+			return x
 		}
 	}
-	return false
+	return nil
 }
