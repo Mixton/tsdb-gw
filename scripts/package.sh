@@ -49,14 +49,14 @@ fpm -s dir -t deb \
 
 BUILD=${BUILD_ROOT}/systemd-centos7
 
-mkdir -p ${BUILD}/usr/sbin
-mkdir -p ${BUILD}/lib/systemd/system/
+mkdir -p ${BUILD}/usr/bin
+mkdir -p ${BUILD}/usr/lib/systemd/system/
 mkdir -p ${BUILD}/etc/gw/
 mkdir -p ${BUILD}/var/run/raintank
 
 cp ${BASE}/config/tsdb-gw.ini ${BUILD}/etc/gw/
 cp ${BUILD_ROOT}/tsdb-gw ${BUILD}/usr/bin/
-cp ${BASE}/config/systemd/tsdb-gw.service $BUILD/lib/systemd/system
+cp ${BASE}/config/systemd/tsdb-gw.service $BUILD/usr/lib/systemd/system
 
 PACKAGE_NAME="${BUILD}/tsdb-gw-${VERSION}.el7.${ARCH}.rpm"
 
