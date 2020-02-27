@@ -40,6 +40,7 @@ var (
 	discardPrefixesStr  string
 	codec               string
 	enabled             bool
+	kssl                bool
 	partitionSchemesStr string
 	maxMessages         int
 	v2                  bool
@@ -86,6 +87,7 @@ func init() {
 	flag.StringVar(&schemasConf, "schemas-file", "/etc/gw/storage-schemas.conf", "path to carbon storage-schemas.conf file")
 	flag.BoolVar(&v2, "v2", true, "enable optimized MetricPoint payload")
 	flag.BoolVar(&v2Org, "v2-org", true, "encode org-id in messages")
+	flag.BoolVar(&kssl, "kafka-ssl", false, "activate ssl com to kafka")
 	flag.DurationVar(&v2ClearInterval, "v2-clear-interval", time.Hour, "interval after which we always resend a full MetricData")
 	flag.StringVar(&kafkaVersionStr, "kafka-version", "0.10.0.0", "Kafka version in semver format. All brokers must be this version or newer.")
 }
@@ -246,6 +248,7 @@ func New(brokers []string, autoInterval bool) *mtPublisher {
 	config.Producer.Flush.MaxMessages = maxMessages
 	config.Producer.Partitioner = sarama.NewManualPartitioner
 	config.Version = kafkaVersion
+        config.Net.TLS.Enable = kssl
 	err = config.Validate()
 	if err != nil {
 		log.Fatalf("failed to validate kafka config. %s", err)
