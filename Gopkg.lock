@@ -28,15 +28,16 @@
   revision = "f61b7225d304620f6f2c5cbb21435d0957115429"
 
 [[projects]]
-  digest = "1:e22217b1fd7a20d7cc1ec7e49b83e63be449ad95bdc7a8dfca3d996a9014bba3"
+  digest = "1:126d55734c3842b1ad75d0590bf8d033b967ca5ede6fe0d2b9ad313facfd5390"
   name = "github.com/Shopify/sarama"
   packages = [
     ".",
     "mocks",
+    "tools/tls",
   ]
   pruneopts = "NUT"
-  revision = "ec843464b50d4c8b56403ec9d589cf41ea30e722"
-  version = "v1.19.0"
+  revision = "b3a812117be917e2dd4f8cbcf4ff861e3ae7ef38"
+  version = "v1.26.1"
 
 [[projects]]
   digest = "1:70c7e0885c12d2b7177b240f7ddc7405a180cf2eff61fc133dd5f5185fb08735"
@@ -264,11 +265,30 @@
   revision = "424b8e1b005f9af4d801572c93d500f056b9754e"
 
 [[projects]]
+  digest = "1:9a3cfd8ec5bea622c87774a058bbd52a656fa7da9dfe8db329b859fb4e11e54d"
+  name = "github.com/hashicorp/go-uuid"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "6195a4f20692188e0a389def25559731d1e130f9"
+  version = "v1.0.2"
+
+[[projects]]
   digest = "1:5587b8eb196f203befdd57c480905b85145af8cc1eddde17d4acc66524f8c42b"
   name = "github.com/jarcoal/httpmock"
   packages = ["."]
   pruneopts = "NUT"
   revision = "4442edb3db31196622da56482fd8d0fa375fba4d"
+
+[[projects]]
+  digest = "1:efc693dbcbe885796a3d46bd1817646d713996bcc2893d42f5434141afc1a86f"
+  name = "github.com/jcmturner/gofork"
+  packages = [
+    "encoding/asn1",
+    "x/crypto/pbkdf2",
+  ]
+  pruneopts = "NUT"
+  revision = "dc7c13fece037a4a36e2b3c69db4991498d30692"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:ebd0081aed1cd0af2f65a362c0ceea985eae9fe72efb28cefb84eca3b98dd3a3"
@@ -293,6 +313,20 @@
   pruneopts = "NUT"
   revision = "84598fe1c80986d57a2315bde379ae6336126b18"
   version = "v1.0.0"
+
+[[projects]]
+  digest = "1:6d494ca43e48e9a9f8895d56b8245a5764a077ea3f2062b66c79d67ef3a8d0ad"
+  name = "github.com/klauspost/compress"
+  packages = [
+    "fse",
+    "huff0",
+    "snappy",
+    "zstd",
+    "zstd/internal/xxhash",
+  ]
+  pruneopts = "NUT"
+  revision = "d4b3bb13d45b000ac3a915d4f32069a9284540bb"
+  version = "v1.10.2"
 
 [[projects]]
   digest = "1:4059c14e87a2de3a434430340521b5feece186c1469eff0834c29a63870de3ed"
@@ -539,9 +573,10 @@
   version = "v0.8.0"
 
 [[projects]]
-  digest = "1:ddcaac7ce43856444af0804f779274fbb9399110c09ac73d72e4b1f1852e370c"
+  digest = "1:2bf1a1924209ee6d23f0caedd6a00f16eec86be843de57bbd4450690350eda85"
   name = "golang.org/x/crypto"
   packages = [
+    "md4",
     "pbkdf2",
     "ssh/terminal",
   ]
@@ -550,7 +585,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8940c3a0b58bb9c1fb3656ae43c5318345fbb1c15bd089cfd23dd373fb37950d"
+  digest = "1:f9782a3e655c70c24c0cf1d7221add993ce2914ccbbcd8b28a4996e739b4d316"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -559,7 +594,9 @@
     "http2",
     "http2/hpack",
     "idna",
+    "internal/socks",
     "internal/timeseries",
+    "proxy",
     "trace",
   ]
   pruneopts = "NUT"
@@ -730,6 +767,72 @@
   version = "v1.27.2"
 
 [[projects]]
+  digest = "1:fea88a1a5c4cf1101d2e0f9d985ad996a1e1dfd4f3df948e12fcf7cf2baf23dc"
+  name = "gopkg.in/jcmturner/aescts.v1"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "f6abebb3171c4c1b1fea279cb7c7325020a26290"
+  version = "v1.0.1"
+
+[[projects]]
+  digest = "1:807e17e89614e6af666dc08855a88e5f1e3c54afb73c10d4b9d28f3b8f48c63c"
+  name = "gopkg.in/jcmturner/dnsutils.v1"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "13eeb8d49ffb74d7a75784c35e4d900607a3943c"
+  version = "v1.0.1"
+
+[[projects]]
+  digest = "1:38cde92cb8f0ea6183e7b8ac6e59bab1074dc0e8e2c22f12d2821280065bb6b7"
+  name = "gopkg.in/jcmturner/gokrb5.v7"
+  packages = [
+    "asn1tools",
+    "client",
+    "config",
+    "credentials",
+    "crypto",
+    "crypto/common",
+    "crypto/etype",
+    "crypto/rfc3961",
+    "crypto/rfc3962",
+    "crypto/rfc4757",
+    "crypto/rfc8009",
+    "gssapi",
+    "iana",
+    "iana/addrtype",
+    "iana/adtype",
+    "iana/asnAppTag",
+    "iana/chksumtype",
+    "iana/errorcode",
+    "iana/etypeID",
+    "iana/flags",
+    "iana/keyusage",
+    "iana/msgtype",
+    "iana/nametype",
+    "iana/patype",
+    "kadmin",
+    "keytab",
+    "krberror",
+    "messages",
+    "pac",
+    "types",
+  ]
+  pruneopts = "NUT"
+  revision = "0b0d9d762bbc834e1e14f3f39dcea984364e9d63"
+  version = "v7.5.0"
+
+[[projects]]
+  digest = "1:0f16d9c577198e3b8d3209f5a89aabe679525b2aba2a7548714e973035c0e232"
+  name = "gopkg.in/jcmturner/rpc.v1"
+  packages = [
+    "mstypes",
+    "ndr",
+  ]
+  pruneopts = "NUT"
+  revision = "99a8ce2fbf8b8087b6ed12a37c61b10f04070043"
+  version = "v1.1.0"
+
+[[projects]]
   digest = "1:3b0cf3a465fd07f76e5fc1a9d0783c662dac0de9fc73d713ebe162768fd87b5f"
   name = "gopkg.in/macaron.v1"
   packages = ["."]
@@ -744,6 +847,7 @@
     "cloud.google.com/go/bigtable",
     "github.com/Shopify/sarama",
     "github.com/Shopify/sarama/mocks",
+    "github.com/Shopify/sarama/tools/tls",
     "github.com/go-macaron/binding",
     "github.com/gogo/protobuf/proto",
     "github.com/golang/snappy",

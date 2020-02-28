@@ -27,7 +27,7 @@ ignored = [
 
 [[constraint]]
   name = "github.com/Shopify/sarama"
-  version = "=1.19.0"
+  version = "1.19.0"
 
 [[constraint]]
   branch = "master"
