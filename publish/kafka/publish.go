@@ -10,6 +10,7 @@ import (
 	"github.com/grafana/metrictank/conf"
 
 	"github.com/Shopify/sarama"
+        "github.com/Shopify/sarama/tools/tls"
 	p "github.com/grafana/metrictank/cluster/partitioner"
 	"github.com/grafana/metrictank/schema"
 	"github.com/grafana/metrictank/schema/msg"
@@ -40,7 +41,10 @@ var (
 	discardPrefixesStr  string
 	codec               string
 	enabled             bool
-	kssl                bool
+	tlsEnabled          bool
+        tlsSkipVerify       bool
+        tlsClientCert       string
+        tlsClientKey        string
 	partitionSchemesStr string
 	maxMessages         int
 	v2                  bool
@@ -87,7 +91,10 @@ func init() {
 	flag.StringVar(&schemasConf, "schemas-file", "/etc/gw/storage-schemas.conf", "path to carbon storage-schemas.conf file")
 	flag.BoolVar(&v2, "v2", true, "enable optimized MetricPoint payload")
 	flag.BoolVar(&v2Org, "v2-org", true, "encode org-id in messages")
-	flag.BoolVar(&kssl, "kafka-ssl", false, "activate ssl com to kafka")
+	flag.BoolVar(&tlsEnabled, "kafka-ssl", false, "activate ssl com to kafka default false")
+	flag.BoolVar(&tlsSkipVerify, "kafka-ssl-skipverify", false, "skip ssl verify default: false")
+	flag.StringVar(&tlsClientCert, "kafka-ssl-clientcrt", "", "client certificate use for auth")
+	flag.StringVar(&tlsClientKey, "kafka-ssl-clientkey", "", "client key use for auth")
 	flag.DurationVar(&v2ClearInterval, "v2-clear-interval", time.Hour, "interval after which we always resend a full MetricData")
 	flag.StringVar(&kafkaVersionStr, "kafka-version", "0.10.0.0", "Kafka version in semver format. All brokers must be this version or newer.")
 }
@@ -248,7 +255,18 @@ func New(brokers []string, autoInterval bool) *mtPublisher {
 	config.Producer.Flush.MaxMessages = maxMessages
 	config.Producer.Partitioner = sarama.NewManualPartitioner
 	config.Version = kafkaVersion
-        config.Net.TLS.Enable = kssl
+
+	if tlsEnabled {
+		tlsConfig, err := tls.NewConfig(tlsClientCert, tlsClientKey)
+		if err != nil {
+			log.Fatalf("Failed to create TLS config: %s", err)
+		}
+
+		config.Net.TLS.Enable = true
+		config.Net.TLS.Config = tlsConfig
+		config.Net.TLS.Config.InsecureSkipVerify = tlsSkipVerify
+	}
+
 	err = config.Validate()
 	if err != nil {
 		log.Fatalf("failed to validate kafka config. %s", err)
