@@ -10,7 +10,7 @@ import (
 	"github.com/grafana/metrictank/conf"
 
 	"github.com/Shopify/sarama"
-        "github.com/Shopify/sarama/tools/tls"
+	"github.com/Shopify/sarama/tools/tls"
 	p "github.com/grafana/metrictank/cluster/partitioner"
 	"github.com/grafana/metrictank/schema"
 	"github.com/grafana/metrictank/schema/msg"
@@ -42,9 +42,9 @@ var (
 	codec               string
 	enabled             bool
 	tlsEnabled          bool
-        tlsSkipVerify       bool
-        tlsClientCert       string
-        tlsClientKey        string
+	tlsSkipVerify       bool
+	tlsClientCert       string
+	tlsClientKey        string
 	partitionSchemesStr string
 	maxMessages         int
 	v2                  bool
