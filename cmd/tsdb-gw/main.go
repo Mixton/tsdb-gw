@@ -191,7 +191,7 @@ func initRoutes(a *api.Api, enforceRoles bool) {
 	a.Router.Post("/opentsdb/api/put", a.GenerateHandlers("write", enforceRoles, false, false, ingest.OpenTSDBWrite)...)
 	a.Router.Any("/prometheus/write", a.GenerateHandlers("write", enforceRoles, false, false, ingest.PrometheusMTWrite)...)
 	a.Router.Post("/metrics/delete", a.GenerateHandlers("write", enforceRoles, false, false, metrictank.MetrictankProxy("/metrics/delete"))...)
-	a.Router.Post("/tags/delSeries", a.GenerateHandlers("write", enforceRoles, false, false, metrictank.MetrictankProxy("/tags/delSeries")))
+	a.Router.Post("/tags/delSeries", a.GenerateHandlers("write", enforceRoles, false, false, metrictank.MetrictankProxy("/tags/delSeries"))...)
 
 	if len(*importerURL) > 0 {
 		a.Router.Post("/metrics/import", a.GenerateHandlers("write", enforceRoles, false, false, ingest.MtBulkImporter())...)
