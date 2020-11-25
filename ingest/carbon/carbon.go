@@ -154,7 +154,7 @@ func (c *Carbon) flush() {
 			if !ok {
 				return
 			}
-			_, _, _, err := m20.ValidatePacket(b, m20.StrictLegacy, m20.NoneM20)
+			_, _, _, err := m20.ValidatePacket(b, m20.MediumLegacy, m20.NoneM20)
 			if err != nil {
 				log.Debugf("packet rejected with error. %s - %s", err, b)
 				metricsRejected.Inc()
